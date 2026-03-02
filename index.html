@@ -40,6 +40,7 @@ console.warn = function(...a) {
 <div id="root"></div>
 
 <script type="text/babel">
+
 // ═══════════════════════════════════════
 // GEBRID MVP v2.1 — Investor Demo
 // JSX compiled by Babel Standalone
@@ -263,6 +264,26 @@ function DashboardView() {
       <Metric label="Active Agents" value="17,800" sub="across all strategies"/>
       <Metric label="24h P&L" value="+$3.82M" trend={0.85}/>
       <Metric label="Risk Score" value="78/100" sub="institutional"/>
+      <Card style={{flex:"1 1 210px",background:"#0a0f1a",border:"1px solid #1a2a4a"}}>
+        <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:10}}>
+          <span style={{fontSize:13}}>🔒</span>
+          <span style={{fontSize:11,color:"#5BA3E6",textTransform:"uppercase",letterSpacing:1,fontWeight:700}}>Private Rounds</span>
+        </div>
+        {[{label:"Seed Round",raised:"$2.5M",target:"$3.0M",pct:83,n:12},{label:"Private Round",raised:"$4.1M",target:"$5.0M",pct:82,n:8}].map((r,i)=><div key={i} style={{marginBottom:i===0?10:0}}>
+          <div style={{display:"flex",justifyContent:"space-between",fontSize:11,marginBottom:3}}>
+            <span style={{color:"#aaa",fontWeight:600}}>{r.label}</span>
+            <span style={{color:"#5BA3E6",fontFamily:"monospace"}}>{r.raised} / {r.target}</span>
+          </div>
+          <div style={{background:"#1F2937",borderRadius:3,height:5,overflow:"hidden",marginBottom:3}}>
+            <div style={{width:`${r.pct}%`,height:"100%",background:"linear-gradient(90deg,#5BA3E6,#A3FF12)",borderRadius:3}}/>
+          </div>
+          <div style={{fontSize:10,color:"#555"}}>{r.n} participants · <span style={{color:"#5BA3E630"}}>identities shielded</span></div>
+        </div>)}
+        <div style={{marginTop:10,display:"flex",gap:6,alignItems:"center"}}>
+          <span style={{fontSize:9,padding:"2px 6px",borderRadius:3,background:"#5BA3E620",color:"#5BA3E6",fontWeight:700,fontFamily:"monospace"}}>🔐 ZK-ENCRYPTED</span>
+          <span style={{fontSize:10,color:"#555"}}>Aggregate only: public</span>
+        </div>
+      </Card>
     </div>
     <div style={{display:"grid",gridTemplateColumns:"1fr 260px",gap:16,marginBottom:16}}>
       <Card>
@@ -477,6 +498,291 @@ function PipelineView() {
         </React.Fragment>)}
       </div>
     </Card>)}
+  </div>;
+}
+</script>
+
+<script type="text/babel">
+// ═══ VESTING NFT MARKETPLACE ═══
+// ═══ SHIELDED ROUNDS ═══
+const SHIELDED_ROUNDS=[
+  {id:"SR-001",name:"Seed Round Alpha",status:"active",raised:"$2.5M",target:"$3.0M",pct:83,investors:12,minEntry:"$100K",maxEntry:"$500K",lockup:"12 months",zkProof:"0x9a3f...7b2e",proofStatus:"verified",chain:"Ethereum",tge:"Q3 2026",vesting:"24mo linear after 6mo cliff",color:"#FF9800"},
+  {id:"SR-002",name:"Private Round",status:"active",raised:"$4.1M",target:"$5.0M",pct:82,investors:8,minEntry:"$250K",maxEntry:"$2M",lockup:"18 months",zkProof:"0x1d4c...e83a",proofStatus:"verified",chain:"Ethereum",tge:"Q3 2026",vesting:"30mo linear after 9mo cliff",color:"#5BA3E6"},
+  {id:"SR-003",name:"Strategic Partners",status:"upcoming",raised:"$0",target:"$8.0M",pct:0,investors:0,minEntry:"$500K",maxEntry:"$5M",lockup:"24 months",zkProof:null,proofStatus:"pending",chain:"Ethereum",tge:"Q4 2026",vesting:"36mo linear after 12mo cliff",color:"#A3FF12"},
+  {id:"SR-004",name:"KOL Round",status:"closed",raised:"$800K",target:"$800K",pct:100,investors:24,minEntry:"$10K",maxEntry:"$50K",lockup:"6 months",zkProof:"0x7e2b...4f1d",proofStatus:"verified",chain:"Base",tge:"Q2 2026",vesting:"12mo linear after 3mo cliff",color:"#E040FB"},
+];
+
+function ShieldedRoundsView() {
+  const [selected,setSelected]=useState(null);
+  const [verifying,setVerifying]=useState(null);
+  const [verified,setVerified]=useState({});
+  const [commitModal,setCommitModal]=useState(null);
+  const [commitAmt,setCommitAmt]=useState("");
+  const [commitStep,setCommitStep]=useState(0);
+
+  const runVerify=(id)=>{
+    setVerifying(id);
+    setTimeout(()=>{setVerifying(null);setVerified(p=>({...p,[id]:true}))},1400);
+  };
+
+  const runCommit=()=>{
+    setCommitStep(1);
+    setTimeout(()=>setCommitStep(2),800);
+    setTimeout(()=>setCommitStep(3),1600);
+    setTimeout(()=>setCommitStep(4),2400);
+  };
+
+  const statusC={active:"#A3FF12",upcoming:"#5BA3E6",closed:"#666"};
+  const statusL={active:"● LIVE",upcoming:"◐ UPCOMING",closed:"○ CLOSED"};
+
+  return <div>
+    <div style={{marginBottom:24}}>
+      <h2 style={{fontSize:24,fontWeight:800,color:"#fff",margin:"0 0 6px"}}>🔒 Shielded Rounds — <span style={{color:"#A3FF12"}}>ZK-Verified Fundraising</span></h2>
+      <p style={{fontSize:13,color:"#888",margin:0,maxWidth:620,lineHeight:1.5}}>Institutional investors participate in funding rounds with zero-knowledge identity verification. Commitment sizes, wallet addresses, and investor identities remain encrypted — only aggregate totals are public.</p>
+    </div>
+
+    <div style={{display:"flex",gap:12,flexWrap:"wrap",marginBottom:20}}>
+      <Metric label="Total Raised" value="$7.4M" trend={14.2} sub="across all rounds"/>
+      <Metric label="Shielded Investors" value="44" sub="identities encrypted"/>
+      <Metric label="ZK Proofs" value="3/4" sub="rounds verified"/>
+      <Metric label="Avg. Commit" value="$168K" sub="per investor"/>
+    </div>
+
+    <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(300px,1fr))",gap:16,marginBottom:20}}>
+      {SHIELDED_ROUNDS.map(r=>{
+        const isVer=verified[r.id];
+        return <Card key={r.id} onClick={()=>setSelected(selected===r.id?null:r.id)} style={{cursor:"pointer",border:`1px solid ${selected===r.id?r.color:"#1F2937"}`,transition:"border-color 0.2s"}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
+            <div>
+              <div style={{fontSize:11,color:r.color,fontWeight:700,fontFamily:"monospace"}}>{r.id}</div>
+              <div style={{fontSize:15,fontWeight:700,color:"#fff",marginTop:2}}>{r.name}</div>
+            </div>
+            <span style={{padding:"3px 10px",borderRadius:4,background:`${statusC[r.status]}20`,color:statusC[r.status],fontSize:10,fontWeight:700,fontFamily:"monospace"}}>{statusL[r.status]}</span>
+          </div>
+
+          <div style={{marginBottom:12}}>
+            <div style={{display:"flex",justifyContent:"space-between",fontSize:11,marginBottom:4}}>
+              <span style={{color:"#aaa"}}>Raised</span>
+              <span style={{color:r.color,fontFamily:"monospace",fontWeight:700}}>{r.raised} / {r.target}</span>
+            </div>
+            <div style={{background:"#1F2937",borderRadius:3,height:6,overflow:"hidden"}}>
+              <div style={{width:`${r.pct}%`,height:"100%",background:`linear-gradient(90deg,${r.color},#A3FF12)`,borderRadius:3,transition:"width 0.5s"}}/>
+            </div>
+            <div style={{fontSize:10,color:"#555",marginTop:3}}>{r.investors} participants · identities shielded</div>
+          </div>
+
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:12}}>
+            <div style={{padding:"8px",borderRadius:6,background:"#0A0A0A",textAlign:"center"}}>
+              <div style={{fontSize:9,color:"#666",marginBottom:2}}>MIN ENTRY</div>
+              <div style={{fontSize:12,fontWeight:700,color:"#fff"}}>{r.minEntry}</div>
+            </div>
+            <div style={{padding:"8px",borderRadius:6,background:"#0A0A0A",textAlign:"center"}}>
+              <div style={{fontSize:9,color:"#666",marginBottom:2}}>LOCKUP</div>
+              <div style={{fontSize:12,fontWeight:700,color:"#fff"}}>{r.lockup}</div>
+            </div>
+          </div>
+
+          {selected===r.id&&<div style={{borderTop:"1px solid #1F2937",paddingTop:12,marginBottom:12}}>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6,fontSize:12}}>
+              {[["Chain",r.chain],["TGE",r.tge],["Max Entry",r.maxEntry],["Vesting",r.vesting]].map(([k,v],i)=>
+                <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"4px 0"}}>
+                  <span style={{color:"#666"}}>{k}</span><span style={{color:"#ccc",fontFamily:"monospace",fontSize:11}}>{v}</span>
+                </div>
+              )}
+            </div>
+          </div>}
+
+          <div style={{padding:"8px 12px",borderRadius:6,background:isVer?"#051a05":"#0a0a14",border:`1px solid ${isVer?"#A3FF1230":"#1F2937"}`,marginBottom:10}}>
+            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+              <div style={{display:"flex",alignItems:"center",gap:6}}>
+                <span style={{fontSize:11}}>{isVer?"✅":"🔐"}</span>
+                <span style={{fontSize:11,color:isVer?"#A3FF12":"#888",fontFamily:"monospace"}}>{isVer?"ZK PROOF VERIFIED":"ZK Proof: "+r.proofStatus}</span>
+              </div>
+              {r.zkProof&&<span style={{fontSize:10,color:"#555",fontFamily:"monospace"}}>{r.zkProof}</span>}
+            </div>
+          </div>
+
+          <div style={{display:"flex",gap:6}}>
+            {r.zkProof&&<button onClick={e=>{e.stopPropagation();runVerify(r.id)}} disabled={verifying===r.id} style={{flex:1,padding:"8px",borderRadius:6,border:`1px solid ${isVer?"#A3FF1240":"#333"}`,background:isVer?"#A3FF1210":"transparent",color:isVer?"#A3FF12":"#888",fontSize:11,cursor:"pointer",fontFamily:"monospace",fontWeight:600}}>
+              {verifying===r.id?"VERIFYING...":isVer?"✓ VERIFIED":"Verify Proof"}
+            </button>}
+            {r.status==="active"&&<button onClick={e=>{e.stopPropagation();setCommitModal(r);setCommitAmt("");setCommitStep(0)}} style={{flex:2,padding:"8px",borderRadius:6,border:"none",background:r.color,color:"#000",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>Commit Capital →</button>}
+            {r.status==="upcoming"&&<button style={{flex:2,padding:"8px",borderRadius:6,border:`1px solid ${r.color}`,background:"transparent",color:r.color,fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>Join Waitlist</button>}
+            {r.status==="closed"&&<button disabled style={{flex:2,padding:"8px",borderRadius:6,border:"1px solid #333",background:"transparent",color:"#444",fontSize:12,cursor:"default",fontFamily:"inherit"}}>Round Closed</button>}
+          </div>
+        </Card>;
+      })}
+    </div>
+
+    <Card style={{background:"#0a0a14",border:"1px solid #1a1a3a"}}>
+      <div style={{fontSize:12,fontWeight:700,color:"#5BA3E6",letterSpacing:1,marginBottom:14,fontFamily:"monospace"}}>🛡️ HOW SHIELDED ROUNDS WORK</div>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:12}}>
+        {[
+          {step:"1",icon:"🔐",title:"ZK Identity",desc:"Investor proves KYC + accreditation without revealing name or wallet"},
+          {step:"2",icon:"💰",title:"Shielded Commit",desc:"Capital commitment is encrypted — only aggregate totals visible"},
+          {step:"3",icon:"✅",title:"Proof Verify",desc:"Anyone can verify proof validity without seeing underlying data"},
+          {step:"4",icon:"🔖",title:"NFT Vesting",desc:"Locked tokens minted as tradeable Vesting NFTs"},
+        ].map((s,i)=><div key={i} style={{padding:"14px",borderRadius:8,background:"#111827",border:"1px solid #1F293740",textAlign:"center"}}>
+          <div style={{fontSize:9,color:"#5BA3E6",fontFamily:"monospace",marginBottom:6}}>STEP {s.step}</div>
+          <div style={{fontSize:22,marginBottom:6}}>{s.icon}</div>
+          <div style={{fontSize:12,fontWeight:700,color:"#fff",marginBottom:4}}>{s.title}</div>
+          <div style={{fontSize:10,color:"#666",lineHeight:1.4}}>{s.desc}</div>
+        </div>)}
+      </div>
+    </Card>
+
+    {commitModal&&<div style={{position:"fixed",inset:0,background:"#000a",display:"flex",alignItems:"center",justifyContent:"center",zIndex:1000}} onClick={()=>setCommitModal(null)}>
+      <div style={{background:"#111827",borderRadius:16,border:`1px solid ${commitModal.color}`,padding:28,maxWidth:460,width:"90%"}} onClick={e=>e.stopPropagation()}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
+          <div>
+            <div style={{fontSize:13,color:commitModal.color,fontWeight:700,fontFamily:"monospace"}}>{commitModal.id}</div>
+            <div style={{fontSize:16,fontWeight:700,color:"#fff",marginTop:2}}>Commit to {commitModal.name}</div>
+          </div>
+          <button onClick={()=>setCommitModal(null)} style={{background:"transparent",border:"none",color:"#666",fontSize:18,cursor:"pointer"}}>✕</button>
+        </div>
+
+        {commitStep===0&&<div>
+          <div style={{padding:"12px 16px",borderRadius:8,background:"#0A0A0A",fontSize:12,marginBottom:16}}>
+            {[["Round",commitModal.name],["Min",commitModal.minEntry],["Max",commitModal.maxEntry],["Lockup",commitModal.lockup],["Vesting",commitModal.vesting]].map(([k,v],i)=>
+              <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"4px 0",borderBottom:"1px solid #111"}}>
+                <span style={{color:"#666"}}>{k}</span><span style={{color:"#fff",fontFamily:"monospace"}}>{v}</span>
+              </div>
+            )}
+          </div>
+          <label style={{fontSize:12,color:"#888",display:"block",marginBottom:6}}>Commitment Amount (USDC)</label>
+          <input type="number" value={commitAmt} onChange={e=>setCommitAmt(e.target.value)} placeholder="250,000" style={{width:"100%",padding:"12px 14px",borderRadius:8,border:"1px solid #333",background:"#0A0A0A",color:"#fff",fontSize:16,fontFamily:"monospace",outline:"none",boxSizing:"border-box",marginBottom:16}}/>
+          <div style={{padding:"10px 14px",borderRadius:8,background:"#0a0f0a",border:"1px solid #A3FF1230",fontSize:11,color:"#888",marginBottom:16}}>
+            🔐 Your identity and commitment size will be encrypted via ZK proof. Only aggregate round totals are publicly visible.
+          </div>
+          <button onClick={runCommit} disabled={!commitAmt} style={{width:"100%",padding:"12px",borderRadius:8,border:"none",background:commitAmt?commitModal.color:"#333",color:commitAmt?"#000":"#666",fontSize:14,fontWeight:700,cursor:commitAmt?"pointer":"default",fontFamily:"inherit"}}>
+            Generate ZK Proof & Commit →
+          </button>
+        </div>}
+
+        {commitStep>0&&<div>
+          {[
+            {label:"Generating ZK identity proof",icon:"🔐"},
+            {label:"Encrypting commitment amount",icon:"💰"},
+            {label:"Submitting shielded transaction",icon:"⛓️"},
+            {label:"Commitment confirmed — identity shielded",icon:"✅"},
+          ].map((s,i)=><div key={i} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderBottom:"1px solid #111",opacity:commitStep>i?1:commitStep===i?0.9:0.25}}>
+            <span style={{fontSize:14,width:22,textAlign:"center"}}>{commitStep>i?"✓":commitStep===i?s.icon:"○"}</span>
+            <span style={{fontSize:12,color:commitStep>i?"#A3FF12":commitStep===i?"#fff":"#555",fontWeight:commitStep===i?600:400,fontFamily:"monospace"}}>{s.label}</span>
+            {commitStep===i&&i<3&&<div style={{marginLeft:"auto",width:14,height:14,border:"2px solid #1F2937",borderTopColor:commitModal.color,borderRadius:"50%",animation:"spin 0.7s linear infinite"}}/>}
+          </div>)}
+          {commitStep>=4&&<div style={{marginTop:16,padding:"14px",borderRadius:8,background:"#051a05",border:"1px solid #A3FF1240",textAlign:"center"}}>
+            <div style={{fontSize:16,fontWeight:700,color:"#A3FF12",marginBottom:4}}>✅ Shielded Commitment Complete</div>
+            <div style={{fontSize:12,color:"#888"}}>${Number(commitAmt).toLocaleString()} USDC committed · ZK proof generated</div>
+            <div style={{fontSize:10,color:"#555",marginTop:4,fontFamily:"monospace"}}>Proof: 0x{Math.random().toString(16).slice(2,10)}...{Math.random().toString(16).slice(2,6)}</div>
+          </div>}
+        </div>}
+      </div>
+    </div>}
+  </div>;
+}
+
+const VESTING_NFTS=[
+  {id:"#0042",round:"Seed",tokens:"14,285,714",ticker:"$GEBRID",price:"$0.007",cliff:6,cliffPassed:4,vesting:24,vestingPassed:8,claimed:"2,380,952",marketVal:"$1.42M",askPrice:"$854K",discount:"40%",color:"#FF9800"},
+  {id:"#0018",round:"Angel",tokens:"8,571,428",ticker:"$GEBRID",price:"$0.0035",cliff:3,cliffPassed:3,vesting:18,vestingPassed:12,claimed:"5,714,285",marketVal:"$857K",askPrice:"$550K",discount:"36%",color:"#A3FF12"},
+  {id:"#0091",round:"Private",tokens:"25,000,000",ticker:"$GEBRID",price:"$0.015",cliff:9,cliffPassed:2,vesting:30,vestingPassed:2,claimed:"0",marketVal:"$2.5M",askPrice:"$1.6M",discount:"36%",color:"#5BA3E6"},
+  {id:"#0057",round:"Seed",tokens:"7,142,857",ticker:"$GEBRID",price:"$0.007",cliff:6,cliffPassed:6,vesting:24,vestingPassed:18,claimed:"5,357,142",marketVal:"$714K",askPrice:"$475K",discount:"33%",color:"#FF9800"},
+];
+function VestingNFTView() {
+  const [selected,setSelected]=useState(null);
+  const [modal,setModal]=useState(null);
+  return <div>
+    <div style={{padding:"14px 18px",borderRadius:10,background:"#0a0f05",border:"1px solid #A3FF1230",marginBottom:20}}>
+      <div style={{fontSize:11,color:"#A3FF12",fontWeight:700,letterSpacing:1,marginBottom:4}}>🔖 VESTING NFT MARKETPLACE</div>
+      <p style={{fontSize:12,color:"#888",margin:0}}>Institutional investors can wrap locked token allocations into tradeable NFTs — exit vesting positions early at a discount without breaking the on-chain schedule.</p>
+    </div>
+    <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(280px,1fr))",gap:16}}>
+      {VESTING_NFTS.map(n=>{
+        const cliffPct=Math.min(100,Math.round(n.cliffPassed/n.cliff*100));
+        const vestPct=Math.min(100,Math.round(n.vestingPassed/n.vesting*100));
+        const cliffDone=n.cliffPassed>=n.cliff;
+        return <div key={n.id} style={{background:"#111827",borderRadius:12,border:`1px solid ${selected===n.id?n.color:"#1F2937"}`,padding:18,cursor:"pointer",transition:"border-color 0.2s"}} onClick={()=>setSelected(selected===n.id?null:n.id)}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
+            <div>
+              <div style={{fontSize:11,color:n.color,fontWeight:700,fontFamily:"monospace"}}>VESTING NFT {n.id}</div>
+              <div style={{fontSize:13,fontWeight:700,color:"#fff",marginTop:2}}>{n.round} Round · {n.price}</div>
+            </div>
+            <span style={{padding:"3px 8px",borderRadius:4,background:`${n.color}20`,color:n.color,fontSize:10,fontWeight:700}}>{n.discount} DISC</span>
+          </div>
+          <div style={{marginBottom:10}}>
+            <div style={{fontSize:11,fontFamily:"monospace",color:"#A3FF12",marginBottom:2}}>{n.tokens} {n.ticker}</div>
+          </div>
+          <div style={{marginBottom:8}}>
+            <div style={{display:"flex",justifyContent:"space-between",fontSize:10,color:"#666",marginBottom:3}}>
+              <span>Cliff: {n.cliffPassed}/{n.cliff} mo</span>
+              <span style={{color:cliffDone?"#A3FF12":"#FF9800"}}>{cliffDone?"✅ PASSED":"⏳ "+Math.round((n.cliff-n.cliffPassed)/1)*1+"mo remaining"}</span>
+            </div>
+            <div style={{background:"#1F2937",borderRadius:3,height:5,overflow:"hidden",marginBottom:6}}>
+              <div style={{width:`${cliffPct}%`,height:"100%",background:cliffDone?"#A3FF12":"#FF9800",borderRadius:3,transition:"width 0.5s"}}/>
+            </div>
+            <div style={{display:"flex",justifyContent:"space-between",fontSize:10,color:"#666",marginBottom:3}}>
+              <span>Vesting: {n.vestingPassed}/{n.vesting} mo</span>
+              <span style={{color:"#5BA3E6"}}>{vestPct}% unlocked</span>
+            </div>
+            <div style={{background:"#1F2937",borderRadius:3,height:5,overflow:"hidden"}}>
+              <div style={{width:`${vestPct}%`,height:"100%",background:"#5BA3E6",borderRadius:3}}/>
+            </div>
+          </div>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:12}}>
+            <div style={{padding:"8px",borderRadius:6,background:"#0A0A0A",textAlign:"center"}}>
+              <div style={{fontSize:9,color:"#666",marginBottom:2}}>MARKET VALUE</div>
+              <div style={{fontSize:12,fontWeight:700,color:"#fff"}}>{n.marketVal}</div>
+            </div>
+            <div style={{padding:"8px",borderRadius:6,background:"#0A0A0A",textAlign:"center"}}>
+              <div style={{fontSize:9,color:"#666",marginBottom:2}}>ASK PRICE</div>
+              <div style={{fontSize:12,fontWeight:700,color:n.color}}>{n.askPrice}</div>
+            </div>
+          </div>
+          <div style={{display:"flex",gap:6}}>
+            <button onClick={e=>{e.stopPropagation();setModal(n)}} style={{flex:1,padding:"8px",borderRadius:6,border:"1px solid #333",background:"transparent",color:"#888",fontSize:11,cursor:"pointer",fontFamily:"inherit"}}>📅 Schedule</button>
+            <button onClick={e=>e.stopPropagation()} style={{flex:2,padding:"8px",borderRadius:6,border:"none",background:n.color,color:"#000",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>Make Offer →</button>
+          </div>
+        </div>;
+      })}
+    </div>
+    {modal&&<div style={{position:"fixed",inset:0,background:"#000a",display:"flex",alignItems:"center",justifyContent:"center",zIndex:1000}} onClick={()=>setModal(null)}>
+      <div style={{background:"#111827",borderRadius:16,border:`1px solid ${modal.color}`,padding:28,maxWidth:460,width:"90%",maxHeight:"80vh",overflowY:"auto"}} onClick={e=>e.stopPropagation()}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
+          <div>
+            <div style={{fontSize:13,color:modal.color,fontWeight:700,fontFamily:"monospace"}}>VESTING NFT {modal.id}</div>
+            <div style={{fontSize:16,fontWeight:700,color:"#fff",marginTop:2}}>{modal.round} Round Unlock Schedule</div>
+          </div>
+          <button onClick={()=>setModal(null)} style={{background:"transparent",border:"none",color:"#666",fontSize:18,cursor:"pointer"}}>✕</button>
+        </div>
+        <div style={{marginBottom:16,padding:"12px 16px",borderRadius:8,background:"#0A0A0A",fontSize:12}}>
+          <div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}><span style={{color:"#666"}}>Total tokens</span><span style={{color:"#A3FF12",fontFamily:"monospace",fontWeight:700}}>{modal.tokens} {modal.ticker}</span></div>
+          <div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}><span style={{color:"#666"}}>Cliff ends</span><span style={{color:"#fff"}}>{modal.cliff} months from TGE</span></div>
+          <div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}><span style={{color:"#666"}}>Vesting period</span><span style={{color:"#fff"}}>{modal.vesting} months linear</span></div>
+          <div style={{display:"flex",justifyContent:"space-between"}}><span style={{color:"#666"}}>Claimed so far</span><span style={{color:"#A3FF12",fontFamily:"monospace"}}>{modal.claimed}</span></div>
+        </div>
+        <div style={{fontSize:12,fontWeight:700,color:"#888",letterSpacing:1,marginBottom:10,textTransform:"uppercase"}}>Monthly Unlock Preview</div>
+        <div style={{display:"flex",flexDirection:"column",gap:2}}>
+          {Array.from({length:6},(_,i)=>{
+            const month=modal.cliffPassed+i+1;
+            const isUnlocked=month<=modal.vestingPassed;
+            const isCurrent=month===modal.vestingPassed+1;
+            const pctPerMonth=1/modal.vesting;
+            const tokensPerMonth=parseInt(modal.tokens.replace(/,/g,""))*pctPerMonth;
+            return <div key={i} style={{display:"flex",alignItems:"center",gap:10,padding:"6px 10px",borderRadius:6,background:isUnlocked?"#0d2818":isCurrent?"#0a1a0a":"transparent",border:`1px solid ${isUnlocked?"#A3FF1230":isCurrent?"#A3FF1218":"#1F2937"}`}}>
+              <span style={{fontSize:10,color:"#555",fontFamily:"monospace",minWidth:50}}>Mo {month}</span>
+              <div style={{flex:1,background:"#1F2937",borderRadius:2,height:4,overflow:"hidden"}}>
+                <div style={{width:isUnlocked?"100%":isCurrent?"50%":"0%",height:"100%",background:"#A3FF12",transition:"width 0.5s"}}/>
+              </div>
+              <span style={{fontSize:10,color:isUnlocked?"#A3FF12":isCurrent?"#fff":"#555",fontFamily:"monospace",minWidth:60,textAlign:"right"}}>{Math.round(tokensPerMonth/1000)}K</span>
+              {isUnlocked&&<span style={{fontSize:9,color:"#A3FF12"}}>✓</span>}
+              {isCurrent&&<span style={{fontSize:9,color:"#FF9800"}}>NOW</span>}
+            </div>;
+          })}
+        </div>
+        <div style={{marginTop:16,padding:"10px 14px",borderRadius:8,background:"#0a0f0a",border:"1px solid #A3FF1230",fontSize:11,color:"#888"}}>
+          🔐 ZK-wrapped: buyer sees proof of <span style={{color:"#A3FF12"}}>≥$500K value</span> · vesting <span style={{color:"#A3FF12"}}>≤{modal.vesting}mo</span> · wallet identity hidden
+        </div>
+      </div>
+    </div>}
   </div>;
 }
 
@@ -702,11 +1008,17 @@ function MarketplaceView({onDeploy}) {
         {types.map(t=><button key={t} onClick={()=>setFilter(t)} style={{padding:"5px 12px",borderRadius:6,border:"none",cursor:"pointer",fontSize:11,fontFamily:"inherit",background:filter===t?"#A3FF12":"#1F2937",color:filter===t?"#000":"#888"}}>
           {typeLabels[t]||t}
         </button>)}
+        <button onClick={()=>setFilter("vesting_nft")} style={{padding:"5px 12px",borderRadius:6,border:`1px solid ${filter==="vesting_nft"?"#FF9800":"transparent"}`,cursor:"pointer",fontSize:11,fontFamily:"inherit",background:filter==="vesting_nft"?"#FF980020":"#1F2937",color:filter==="vesting_nft"?"#FF9800":"#888"}}>
+          🔖 Vesting NFT <span style={{fontSize:9,padding:"1px 4px",borderRadius:3,background:"#FF980030",color:"#FF9800",marginLeft:2}}>NEW</span>
+        </button>
       </div>
     </div>
 
-    {/* Cards Grid */}
-    <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(290px,1fr))",gap:14}}>
+    {/* Vesting NFT Marketplace */}
+    {filter==="vesting_nft"&&<VestingNFTView/>}
+
+    {/* Cards Grid — hidden for vesting_nft */}
+    {filter!=="vesting_nft"&&<div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(290px,1fr))",gap:14}}>
       {filtered.map(s=>{
         const m=STRAT_META[s.id]||{};
         const inCompare=compareList.find(x=>x.id===s.id);
@@ -778,7 +1090,7 @@ function MarketplaceView({onDeploy}) {
           </div>
         </div>;
       })}
-    </div>
+    </div>}
   </div>;
 }
 
@@ -1192,8 +1504,8 @@ function GuardView() {
         <h2 style={{fontSize:20,fontWeight:700,color:"#fff",margin:0}}>🛡️ Guard Agents — Protection Layer</h2>
         <p style={{fontSize:13,color:"#888",margin:"4px 0 0"}}>Interactive security simulators</p>
       </div>
-      <div style={{display:"flex",gap:4,background:"#111827",borderRadius:8,padding:3}}>
-        {[["simulator","⚡ Protection Agent"],["preflight","🔒 Payment Guard"],["quarantine","🧪 Dust Quarantine"]].map(([id,label])=>
+      <div style={{display:"flex",gap:4,background:"#111827",borderRadius:8,padding:3,flexWrap:"wrap"}}>
+        {[["simulator","⚡ Protection Agent"],["preflight","🔒 Payment Guard"],["quarantine","🧪 Dust Quarantine"],["zkprivacy","🔐 ZK Privacy"]].map(([id,label])=>
           <button key={id} onClick={()=>setTab(id)} style={{padding:"8px 16px",borderRadius:6,border:"none",cursor:"pointer",fontSize:12,fontWeight:600,fontFamily:"monospace",background:tab===id?"#A3FF12":"transparent",color:tab===id?"#000":"#888"}}>{label}</button>
         )}
       </div>
@@ -1342,7 +1654,102 @@ function GuardView() {
         </div>
       </Card>
     </div>}
+
+    {tab==="zkprivacy"&&<ZKPrivacyView/>}
+
     <style>{`@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}`}</style>
+  </div>;
+}
+
+// ═══ ZK PRIVACY VIEW ═══
+function ZKPrivacyView() {
+  const [kycMode,setKycMode]=useState("Regulator");
+  const [verifying,setVerifying]=useState(false);
+  const [verified,setVerified]=useState(false);
+  const [proofHash]=useState("0x7a3f9b2c...e84d1f");
+
+  const runVerify=()=>{
+    setVerifying(true);setVerified(false);
+    setTimeout(()=>{setVerifying(false);setVerified(true)},1600);
+  };
+
+  const DISCLOSURE={
+    "Public":    {fields:["KYC Status","Jurisdiction","Accredited"],values:["✅ VERIFIED","✅ PERMITTED","✅ YES"],hidden:["Name","Wallet","Amount","Institution"]},
+    "Auditor":   {fields:["KYC Status","Jurisdiction","Accredited","Institution type"],values:["✅ VERIFIED","✅ PERMITTED","✅ YES","Family Office"],hidden:["Name","Wallet","Amount"]},
+    "Regulator": {fields:["KYC Status","Jurisdiction","Accredited","Institution","Amount range"],values:["✅ VERIFIED","✅ PERMITTED","✅ YES","[REDACTED]","$1M–$10M"],hidden:["Name","Wallet","Exact amount"]},
+  };
+  const disc=DISCLOSURE[kycMode]||DISCLOSURE["Regulator"];
+
+  return <div>
+    <div style={{marginBottom:24}}>
+      <h3 style={{fontSize:24,fontWeight:800,color:"#fff",margin:"0 0 6px"}}>ZK Privacy Layer — <span style={{color:"#A3FF12"}}>Investor Identity Shield</span></h3>
+      <p style={{fontSize:13,color:"#888",margin:0,maxWidth:620,lineHeight:1.5}}>Institutional investors prove KYC compliance and accreditation without revealing identity, wallet, or exact amounts. Regulators receive selective disclosure — only what's required by law.</p>
+    </div>
+
+    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16,marginBottom:16}}>
+      {/* ZK KYC Card */}
+      <Card style={{background:"#0a0f0a",border:"1px solid #1a3a1a"}}>
+        <div style={{fontSize:12,fontWeight:700,color:"#A3FF12",letterSpacing:1,marginBottom:16,fontFamily:"monospace"}}>🔐 ZK-KYC VERIFICATION</div>
+
+        <div style={{padding:"14px 16px",borderRadius:8,background:"#0A0A0A",border:"1px solid #1F2937",marginBottom:16}}>
+          <div style={{fontSize:11,color:"#555",fontFamily:"monospace",marginBottom:10}}>INVESTOR PROOF PACKET</div>
+          {[["Investor","██████████ (hidden)","#888"],["KYC Status","✅ VERIFIED (zk-proof)","#A3FF12"],["Jurisdiction","✅ PERMITTED","#A3FF12"],["Accredited","✅ YES","#A3FF12"],["Proof hash",proofHash,"#5BA3E6"]].map(([k,v,c],i)=>
+            <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"5px 0",borderBottom:"1px solid #111",fontSize:12}}>
+              <span style={{color:"#666"}}>{k}</span>
+              <span style={{color:c,fontFamily:"monospace",fontWeight:600}}>{v}</span>
+            </div>
+          )}
+        </div>
+
+        <button onClick={runVerify} disabled={verifying} style={{width:"100%",padding:"10px",borderRadius:7,border:"none",background:verified?"#0d2818":"#A3FF12",color:verified?"#A3FF12":"#000",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"monospace",marginBottom:10}}>
+          {verifying?"VERIFYING PROOF...":verified?"✅ PROOF VERIFIED — VALID":"VERIFY ZK PROOF"}
+        </button>
+
+        {verified&&<div style={{padding:"10px 14px",borderRadius:8,background:"#051a05",border:"1px solid #A3FF1230",fontSize:11,color:"#A3FF12",fontFamily:"monospace"}}>
+          ✓ Proof valid · KYC: compliant · Jurisdiction: permitted<br/>
+          <span style={{color:"#555"}}>Public sees: 0 personal data</span>
+        </div>}
+      </Card>
+
+      {/* Selective Disclosure Card */}
+      <Card style={{background:"#0a0f0a",border:"1px solid #1a3a1a"}}>
+        <div style={{fontSize:12,fontWeight:700,color:"#A3FF12",letterSpacing:1,marginBottom:16,fontFamily:"monospace"}}>📋 SELECTIVE DISCLOSURE</div>
+
+        <div style={{display:"flex",gap:6,marginBottom:16}}>
+          {["Public","Auditor","Regulator"].map(m=><button key={m} onClick={()=>setKycMode(m)} style={{flex:1,padding:"7px",borderRadius:6,border:`1px solid ${kycMode===m?"#A3FF12":"#333"}`,background:kycMode===m?"#A3FF1215":"#0A0A0A",color:kycMode===m?"#A3FF12":"#666",fontSize:11,cursor:"pointer",fontFamily:"monospace",fontWeight:600}}>{m}</button>)}
+        </div>
+
+        <div style={{marginBottom:14}}>
+          <div style={{fontSize:10,color:"#A3FF12",fontFamily:"monospace",marginBottom:8}}>✅ VISIBLE TO {kycMode.toUpperCase()}</div>
+          {disc.fields.map((f,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",padding:"5px 0",borderBottom:"1px solid #111",fontSize:12}}>
+            <span style={{color:"#999"}}>{f}</span><span style={{color:"#A3FF12",fontFamily:"monospace"}}>{disc.values[i]}</span>
+          </div>)}
+        </div>
+        <div>
+          <div style={{fontSize:10,color:"#FF5252",fontFamily:"monospace",marginBottom:8}}>🔒 HIDDEN FROM {kycMode.toUpperCase()}</div>
+          {disc.hidden.map((f,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",padding:"5px 0",borderBottom:"1px solid #111",fontSize:12}}>
+            <span style={{color:"#666"}}>{f}</span><span style={{color:"#333",fontFamily:"monospace"}}>██████ encrypted</span>
+          </div>)}
+        </div>
+      </Card>
+    </div>
+
+    {/* ZK Shielded Capital */}
+    <Card style={{background:"#0a0a14",border:"1px solid #1a1a3a"}}>
+      <div style={{fontSize:12,fontWeight:700,color:"#5BA3E6",letterSpacing:1,marginBottom:14,fontFamily:"monospace"}}>💼 SHIELDED CAPITAL CONTRIBUTIONS</div>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:12}}>
+        {[
+          {mode:"Standard",desc:"Full transparency",pos:"Wallet, size, strategy all public",color:"#888",icon:"👁️"},
+          {mode:"ZK-Shielded",desc:"Sizes hidden",pos:"Position sizes hidden · Aggregates public",color:"#5BA3E6",icon:"🔵"},
+          {mode:"Full ZK",desc:"Complete privacy",pos:"Wallet + size + strategy encrypted",color:"#A3FF12",icon:"🔐"},
+        ].map((m,i)=><div key={i} style={{padding:"14px",borderRadius:8,background:"#111827",border:`1px solid ${m.color}40`}}>
+          <div style={{fontSize:18,marginBottom:6}}>{m.icon}</div>
+          <div style={{fontSize:13,fontWeight:700,color:m.color,marginBottom:4}}>{m.mode}</div>
+          <div style={{fontSize:11,color:"#888",marginBottom:6}}>{m.desc}</div>
+          <div style={{fontSize:10,color:"#666",lineHeight:1.5}}>{m.pos}</div>
+        </div>)}
+      </div>
+    </Card>
   </div>;
 }
 
@@ -1921,6 +2328,33 @@ function BuilderView({strategy,onBack}) {
   const [deployStep,setDeployStep]=useState(0);
   const [showGallery,setShowGallery]=useState(!strategy);
   const [cfg,setCfg]=useState({name:strategy?`${strategy.name} Agent`:"My Agent",aum:"100000",chain:"ethereum",maxTrade:"50000",stopLoss:"5",type:"standard",protocol:"hyperliquid",leverage:"5",pair:"ETH-PERP"});
+  const [backtest,setBacktest]=useState(null);
+  const [backtesting,setBacktesting]=useState(false);
+  const [guardRules,setGuardRules]=useState({dustFilter:true,addressPoison:true,maxSlippage:true,sanctionsCheck:true,flashloanGuard:false,mevProtect:false});
+  const [aiRec,setAiRec]=useState(null);
+  const [aiLoading,setAiLoading]=useState(false);
+
+  const runBacktest=()=>{
+    setBacktesting(true);setBacktest(null);
+    setTimeout(()=>{
+      const base=cfg.type==="perps"?[100,108,118,112,124,138,130,145,155,148,162,172]:[100,103,108,106,112,118,115,122,128,131,138,142];
+      const noise=base.map(v=>v+(Math.random()-0.45)*8);
+      setBacktest({curve:noise,sharpe:(1.2+Math.random()*0.8).toFixed(2),maxDD:(-5-Math.random()*12).toFixed(1),winRate:(54+Math.random()*16).toFixed(1),totalReturn:((noise[noise.length-1]-100)).toFixed(1),trades:Math.floor(200+Math.random()*600),avgHold:cfg.type==="perps"?"2.4h":"18h"});
+      setBacktesting(false);
+    },1200);
+  };
+
+  const runAiRec=()=>{
+    setAiLoading(true);
+    setTimeout(()=>{
+      const recs=[
+        {title:"Optimize Stop Loss",desc:`Based on historical volatility, ${cfg.stopLoss}% stop loss is ${Number(cfg.stopLoss)>8?"aggressive":"optimal"}. Consider ${Math.max(3,Number(cfg.stopLoss)-1)}% for this strategy type.`,impact:"+2.1% annual return",type:"risk"},
+        {title:"Add Gas Optimization",desc:"Enable batch execution to reduce gas costs by ~40%. Recommended for strategies with >10 trades/day.",impact:"-$12K/year gas",type:"cost"},
+        {title:"Enable MEV Protection",desc:"Front-running risk detected on "+cfg.chain+". GEBRID MEV shield routes through Flashbots Protect.",impact:"Prevent ~$3K/mo losses",type:"security"},
+      ];
+      setAiRec(recs);setAiLoading(false);
+    },900);
+  };
   const handleDeploy=()=>{
     setDeploying(true);setDeployStep(0);
     setTimeout(()=>setDeployStep(1),600);
@@ -1978,13 +2412,13 @@ function BuilderView({strategy,onBack}) {
   return <div>
     <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:20}}><Btn onClick={()=>setShowGallery(true)}>← Templates</Btn><h2 style={{fontSize:20,fontWeight:700,color:"#fff",margin:0}}>Agent Builder</h2></div>
     <div style={{display:"flex",gap:8,marginBottom:24}}>
-      {["Configure","Risk","Deploy"].map((s,i)=><div key={i} style={{display:"flex",alignItems:"center",gap:6}}>
+      {["Configure","Risk & Guard","Deploy"].map((s,i)=><div key={i} style={{display:"flex",alignItems:"center",gap:6}}>
         <div style={{width:26,height:26,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:700,background:step>i?"#A3FF12":step===i+1?"#A3FF1230":"#1F2937",color:step>i?"#000":step===i+1?"#A3FF12":"#666"}}>{i+1}</div>
         <span style={{fontSize:13,color:step===i+1?"#fff":"#666"}}>{s}</span>
         {i<2&&<div style={{width:30,height:1,background:step>i+1?"#A3FF12":"#333",margin:"0 4px"}}/>}
       </div>)}
     </div>
-    <Card style={{maxWidth:560}}>
+    <Card style={{maxWidth:640}}>
       {step===1&&<div>
         <div style={{marginBottom:14}}><label style={{fontSize:12,color:"#888",display:"block",marginBottom:6}}>Agent Name</label>
           <input value={cfg.name} onChange={e=>setCfg(p=>({...p,name:e.target.value}))} style={{width:"100%",padding:"10px 14px",borderRadius:8,border:"1px solid #333",background:"#0A0A0A",color:"#fff",fontSize:14,fontFamily:"inherit",outline:"none",boxSizing:"border-box"}}/></div>
@@ -2015,10 +2449,73 @@ function BuilderView({strategy,onBack}) {
           <input type="number" value={cfg.maxTrade} onChange={e=>setCfg(p=>({...p,maxTrade:e.target.value}))} style={{width:"100%",padding:"10px 14px",borderRadius:8,border:"1px solid #333",background:"#0A0A0A",color:"#fff",fontSize:14,fontFamily:"inherit",outline:"none",boxSizing:"border-box"}}/></div>
         <div style={{marginBottom:14}}><label style={{fontSize:12,color:"#888",display:"block",marginBottom:6}}>Stop Loss (%)</label>
           <input type="number" value={cfg.stopLoss} onChange={e=>setCfg(p=>({...p,stopLoss:e.target.value}))} style={{width:"100%",padding:"10px 14px",borderRadius:8,border:"1px solid #333",background:"#0A0A0A",color:"#fff",fontSize:14,fontFamily:"inherit",outline:"none",boxSizing:"border-box"}}/></div>
+        <div style={{marginBottom:18}}>
+          <label style={{fontSize:12,color:"#888",display:"block",marginBottom:8}}>Privacy Mode</label>
+          <div style={{display:"flex",gap:6}}>
+            {[["off","🌐 Off","#666"],["zk","🔵 ZK-Shielded","#5BA3E6"],["full","🔐 Full Privacy","#A3FF12"]].map(([id,label,c])=><button key={id} onClick={()=>setCfg(p=>({...p,privacy:id}))} style={{flex:1,padding:"8px 4px",borderRadius:6,border:`1px solid ${cfg.privacy===id?c:"#333"}`,background:cfg.privacy===id?`${c}15`:"#0A0A0A",color:cfg.privacy===id?c:"#666",fontSize:10,cursor:"pointer",fontFamily:"monospace",fontWeight:600}}>{label}</button>)}
+          </div>
+          <div style={{marginTop:8,padding:"8px 12px",borderRadius:6,background:"#0a0f0a",border:"1px solid #1F2937",fontSize:11,color:"#777",fontFamily:"monospace",minHeight:34}}>
+            {!cfg.privacy||cfg.privacy==="off"?"Positions visible on-chain · Standard transparency":cfg.privacy==="zk"?"Position sizes hidden · Only aggregate data public · Wallet visible":"Full ZK: wallet, size & strategy encrypted · Only zk-proof public"}
+          </div>
+        </div>
+
+        {/* Guard Rules */}
+        <div style={{marginBottom:18}}>
+          <label style={{fontSize:12,color:"#888",display:"block",marginBottom:8}}>🛡️ Guard Rules</label>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
+            {[["dustFilter","Dust Filter","Auto-quarantine micro-txs"],["addressPoison","Address Poisoning","Block lookalike addrs"],["maxSlippage","Max Slippage 2%","Reject high-slip trades"],["sanctionsCheck","Sanctions Check","OFAC/Chainalysis screen"],["flashloanGuard","Flashloan Guard","Block flashloan vectors"],["mevProtect","MEV Protection","Flashbots Protect routing"]].map(([id,label,desc])=>
+              <div key={id} onClick={()=>setGuardRules(p=>({...p,[id]:!p[id]}))} style={{padding:"8px 10px",borderRadius:6,border:`1px solid ${guardRules[id]?"#A3FF1240":"#1F2937"}`,background:guardRules[id]?"#0d2818":"#0A0A0A",cursor:"pointer",transition:"all 0.2s"}}>
+                <div style={{display:"flex",alignItems:"center",gap:6}}>
+                  <span style={{fontSize:12,color:guardRules[id]?"#A3FF12":"#555"}}>{guardRules[id]?"☑":"☐"}</span>
+                  <span style={{fontSize:11,fontWeight:600,color:guardRules[id]?"#fff":"#888"}}>{label}</span>
+                </div>
+                <div style={{fontSize:9,color:"#555",marginTop:2,marginLeft:18}}>{desc}</div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Backtest */}
+        <div style={{marginBottom:14}}>
+          <button onClick={runBacktest} disabled={backtesting} style={{width:"100%",padding:"10px",borderRadius:8,border:"1px dashed #5BA3E640",background:"#0a0a14",color:backtesting?"#555":"#5BA3E6",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"monospace"}}>
+            {backtesting?"RUNNING BACKTEST...":"📊 Run 12-Month Backtest Simulation"}
+          </button>
+          {backtest&&<div style={{marginTop:10,padding:"14px",borderRadius:8,background:"#0d1520",border:"1px solid #1a2a3a"}}>
+            <div style={{fontSize:10,color:"#5BA3E6",fontFamily:"monospace",marginBottom:8,fontWeight:700}}>BACKTEST RESULTS (12 MONTHS)</div>
+            <svg width="100%" height="60" viewBox="0 0 240 60" style={{display:"block",marginBottom:10}}>
+              <polyline points={backtest.curve.map((v,i)=>`${(i/(backtest.curve.length-1))*240},${60-((v-Math.min(...backtest.curve))/(Math.max(...backtest.curve)-Math.min(...backtest.curve)))*55}`).join(" ")} fill="none" stroke="#A3FF12" strokeWidth="1.5"/>
+            </svg>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8}}>
+              {[["Return",`${backtest.totalReturn>0?"+":""}${backtest.totalReturn}%`,backtest.totalReturn>0?"#A3FF12":"#FF5252"],["Sharpe",backtest.sharpe,"#5BA3E6"],["Max DD",`${backtest.maxDD}%`,"#FF9800"],["Win Rate",`${backtest.winRate}%`,"#A3FF12"],["Trades",backtest.trades,"#888"],["Avg Hold",backtest.avgHold,"#888"]].map(([l,v,c],i)=>
+                <div key={i} style={{textAlign:"center"}}>
+                  <div style={{fontSize:14,fontWeight:700,color:c,fontFamily:"monospace"}}>{v}</div>
+                  <div style={{fontSize:9,color:"#555"}}>{l}</div>
+                </div>
+              )}
+            </div>
+          </div>}
+        </div>
+
+        {/* AI Recommendations */}
+        <div style={{marginBottom:14}}>
+          <button onClick={runAiRec} disabled={aiLoading} style={{width:"100%",padding:"10px",borderRadius:8,border:"1px dashed #FF980040",background:"#0f0a05",color:aiLoading?"#555":"#FF9800",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"monospace"}}>
+            {aiLoading?"ANALYZING...":"🤖 AI Strategy Recommendations"}
+          </button>
+          {aiRec&&<div style={{marginTop:10}}>
+            {aiRec.map((r,i)=><div key={i} style={{padding:"10px 12px",borderRadius:8,background:"#111827",border:"1px solid #1F2937",marginBottom:6}}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:4}}>
+                <span style={{fontSize:12,fontWeight:700,color:"#fff"}}>{r.title}</span>
+                <span style={{fontSize:10,padding:"2px 6px",borderRadius:3,background:r.type==="risk"?"#FF980020":r.type==="cost"?"#A3FF1220":"#FF525220",color:r.type==="risk"?"#FF9800":r.type==="cost"?"#A3FF12":"#FF5252",fontWeight:600}}>{r.impact}</span>
+              </div>
+              <div style={{fontSize:11,color:"#888",lineHeight:1.4}}>{r.desc}</div>
+            </div>)}
+          </div>}
+        </div>
+
         <div style={{display:"flex",gap:8}}><Btn onClick={()=>setStep(1)} style={{flex:1}}>Back</Btn><Btn primary onClick={()=>setStep(3)} style={{flex:2}}>Review</Btn></div>
       </div>}
       {step===3&&<div>
-        {[["Agent",cfg.name],["Capital",`${Number(cfg.aum).toLocaleString()} USDC`],["Network",cfg.chain],...(cfg.type==="perps"?[["Protocol",cfg.protocol.toUpperCase()],["Pair",cfg.pair],["Leverage",`${cfg.leverage}x`]]:[[]]),...[["Max Trade",`$${Number(cfg.maxTrade).toLocaleString()}`],["Stop Loss",`${cfg.stopLoss}%`],["Protection","ON"]]].map(([k,v],i)=>
+        {[["Agent",cfg.name],["Capital",`${Number(cfg.aum).toLocaleString()} USDC`],["Network",cfg.chain],...(cfg.type==="perps"?[["Protocol",cfg.protocol.toUpperCase()],["Pair",cfg.pair],["Leverage",`${cfg.leverage}x`]]:[[]]),...[["Max Trade",`$${Number(cfg.maxTrade).toLocaleString()}`],["Stop Loss",`${cfg.stopLoss}%`],["Guard Rules",`${Object.values(guardRules).filter(Boolean).length}/6 active`],["Protection","ON"],["Privacy Mode",!cfg.privacy||cfg.privacy==="off"?"Standard":cfg.privacy==="zk"?"ZK-Shielded":"Full ZK"]]].map(([k,v],i)=>
           <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"8px 0",borderBottom:"1px solid #1F2937",fontSize:13}}>
             <span style={{color:"#888"}}>{k}</span><span style={{color:"#fff"}}>{v}</span>
           </div>
@@ -2071,6 +2568,9 @@ function App() {
     {id:"ai",icon:"🤖",label:"AI Console",badge:"AI"},
     {id:"pipeline",icon:"⚡",label:"Pipeline"},
     {id:"marketplace",icon:"⭐",label:"Marketplace"},
+    {id:"vesting",icon:"🔖",label:"Vesting NFT",badge:"NEW"},
+    {id:"shielded",icon:"🔒",label:"Shielded Rounds",badge:"ZK"},
+    {id:"zkprivacy",icon:"🔐",label:"ZK Privacy"},
     {id:"gamefi",icon:"🎮",label:"GameFi",badge:"NEW"},
     {id:"risk",icon:"🛡️",label:"Risk Monitor"},
     {id:"guard",icon:"🔒",label:"Guard Agents",badge:"5"},
@@ -2132,6 +2632,9 @@ function App() {
         {view==="ai"&&<AIConsoleView/>}
         {view==="pipeline"&&<PipelineView/>}
         {view==="marketplace"&&<MarketplaceView onDeploy={s=>{setSelStrat(s);setView("builder")}}/>}
+        {view==="vesting"&&<VestingNFTView/>}
+        {view==="shielded"&&<ShieldedRoundsView/>}
+        {view==="zkprivacy"&&<ZKPrivacyView/>}
         {view==="gamefi"&&<GameFiView/>}
         {view==="risk"&&<RiskView/>}
         {view==="guard"&&<GuardView/>}
@@ -2146,6 +2649,7 @@ function App() {
 }
 
 ReactDOM.render(<App/>, document.getElementById("root"));
+
 </script>
 </body>
 </html>
