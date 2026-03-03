@@ -470,20 +470,35 @@ AI Constructor SaaS, DePC Contracts & Royalties, NFT Marketplace, AI Debit Cards
 COMPANY: Gebrid Foundation LLC, Hallandale Beach FL. gebrid.io. partnerships@gebrid.io.`;
 
   const callAPI = async (userMsg, history) => {
-    try {
-      const apiMessages = history.map(m => ({role: m.role, content: m.content}));
-      apiMessages.push({role: "user", content: userMsg});
-      
-      const response = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 1000,
-          system: GEBRID_SYSTEM,
-          messages: apiMessages
-        })
-      });
+  try {
+    // Делаем запрос к вашему прокси-серверу на Cloudflare
+    const response = await fetch('/api/chat', { 
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ message: userMsg })
+    });
+
+    if (!response.ok) {
+      throw new Error("Ошибка сети или сервера");
+    }
+
+    const data = await response.json();
+    const text = data.reply; // Получаем ответ от Gemini
+
+    if (!text) {
+      throw new Error("Пустой ответ от AI");
+    }
+
+    setMode("live");
+    return text;
+  } catch(e) {
+    console.log("API unavailable, using fallback:", e.message);
+    setMode("mock");
+    return getMockResponse(userMsg); // Включаем заготовленные ответы, если ошибка
+  }
+};
       
       if (!response.ok) throw new Error("API error");
       const data = await response.json();
