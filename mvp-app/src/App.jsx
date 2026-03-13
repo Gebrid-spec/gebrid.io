@@ -179,7 +179,9 @@ function DashboardView() {
 }
 
 // ═══ AI AGENT CONSOLE ═══
-const AGENT_ENDPOINT = "https://api.anthropic.com/v1/messages";
+// Production: Cloudflare Worker proxy at /api/agent/chat
+// Dev fallback: direct Anthropic API (only works in Claude artifacts)
+const AGENT_ENDPOINT = import.meta.env.VITE_AI_PROXY_URL || "/api/agent/chat";
 const AGENT_TIMEOUT_MS = 30000;
 const AGENT_SYSTEM = `You are GEBRID Agent OS — an AI operating system for institutional on-chain capital management. You orchestrate AI agent swarms managing $450M AUM across DeFi, RWA, GameFi, and treasury strategies.
 
