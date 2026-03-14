@@ -10,8 +10,8 @@ export const PORT_HIST = [
   {day:"Apr 10",value:476000000},{day:"Apr 13",value:483000000},{day:"Apr 16",value:488000000},
   {day:"Apr 19",value:485000000},{day:"Apr 22",value:492000000},{day:"Apr 25",value:450000000},
 ];
-export const DRAWDOWN = Array.from({length:30},(_,i)=>({day:i+1,dd:-(Math.abs(Math.sin(i/4)*3.8)+Math.random()*1.2).toFixed(2)}));
-export const MONTHLY_RET = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"].map((m,i)=>({month:m,ret:+(Math.sin(i/2)*8+Math.random()*5-2).toFixed(1)}));
+export const DRAWDOWN   = Array.from({length:30},(_,i)=>({day:i+1,dd:-(Math.abs(Math.sin(i/4)*3.8)+Math.random()*1.2).toFixed(2)}));
+export const MONTHLY_RET= ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"].map((m,i)=>({month:m,ret:+(Math.sin(i/2)*8+Math.random()*5-2).toFixed(1)}));
 export const AGENTS = [
   {id:1,name:"GEBRID DCA Engine",strategy:"Institutional Dollar Cost Avg",status:"active",pnl:14.8,aum:125000000,risk:"low",chain:"Ethereum",trades:4280,uptime:"99.9%"},
   {id:2,name:"GEBRID Yield Core",strategy:"Auto-compound DeFi Yield",status:"active",pnl:22.4,aum:98000000,risk:"medium",chain:"Base",trades:2140,uptime:"99.8%"},
@@ -56,12 +56,12 @@ export const TX_PIPELINE = [
   {id:5,agent:"GEBRID RWA",action:"Tokenize T-Bill position",amount:"$8.2M",status:"completed",steps:["Proposed","Screened","Approved","Executed"]},
 ];
 export const GAMEFI_WORLDS = [
-  {name:"The Sandbox",icon:"🏜️",tier:"production",agents:8,lands:142,value:"1,840 ETH",status:"active",pnl:"+34.2%",activity:"Scouting sectors (140-220) via marketplace API, 12 bids active",how:"On-chain: marketplace smart contract interaction via ethers.js. Floor price monitoring, automated bidding, listing management across 142 plots."},
-  {name:"Decentraland",icon:"🌐",tier:"production",agents:5,lands:89,value:"2,410 ETH",status:"active",pnl:"+18.9%",activity:"Listing 28 plots near Genesis Plaza, monitoring 4 districts",how:"On-chain: MANA/LAND contract calls. Price analytics engine scores parcels by proximity, traffic data, and comparable sales."},
-  {name:"Otherside",icon:"🦍",tier:"production",agents:3,lands:24,value:"4,200 ETH",status:"active",pnl:"+52.1%",activity:"Monitoring Koda trait rarity, 6 snipe orders queued",how:"On-chain: OpenSea/Blur API + smart contract sniper. Trait-based valuation model flags underpriced Kodas."},
-  {name:"Axie Infinity",icon:"⚔️",tier:"beta",agents:4,lands:0,value:"$842K",status:"active",pnl:"+22.7%",activity:"Auto-claiming SLP/AXS rewards, staking $842K position",how:"DeFi-layer: on-chain reward claiming & staking via Ronin bridge."},
-  {name:"Illuvium",icon:"🎮",tier:"beta",agents:2,lands:0,value:"$420K",status:"active",pnl:"+15.3%",activity:"ILV yield farming & staking, revenue pool optimization",how:"DeFi-layer: ILV staking contracts, sILV2 flash pool management."},
-  {name:"Big Time",icon:"⏳",tier:"rd",agents:0,lands:0,value:"$210K",status:"paused",pnl:"+8.1%",activity:"R&D: evaluating on-chain asset extraction pipeline",how:"Research phase: mapping on-chain vs. off-chain game economy."},
+  {name:"The Sandbox",icon:"\u{1F3DC}\uFE0F",tier:"production",agents:8,lands:142,value:"1,840 ETH",status:"active",pnl:"+34.2%",activity:"Scouting sectors (140-220) via marketplace API, 12 bids active",how:"On-chain: marketplace smart contract interaction via ethers.js. Floor price monitoring, automated bidding, listing management across 142 plots."},
+  {name:"Decentraland",icon:"\u{1F310}",tier:"production",agents:5,lands:89,value:"2,410 ETH",status:"active",pnl:"+18.9%",activity:"Listing 28 plots near Genesis Plaza, monitoring 4 districts",how:"On-chain: MANA/LAND contract calls. Price analytics engine scores parcels by proximity, traffic data, and comparable sales."},
+  {name:"Otherside",icon:"\u{1F98D}",tier:"production",agents:3,lands:24,value:"4,200 ETH",status:"active",pnl:"+52.1%",activity:"Monitoring Koda trait rarity, 6 snipe orders queued",how:"On-chain: OpenSea/Blur API + smart contract sniper. Trait-based valuation model flags underpriced Kodas."},
+  {name:"Axie Infinity",icon:"\u2694\uFE0F",tier:"beta",agents:4,lands:0,value:"$842K",status:"active",pnl:"+22.7%",activity:"Auto-claiming SLP/AXS rewards, staking $842K position",how:"DeFi-layer: on-chain reward claiming & staking via Ronin bridge."},
+  {name:"Illuvium",icon:"\u{1F3AE}",tier:"beta",agents:2,lands:0,value:"$420K",status:"active",pnl:"+15.3%",activity:"ILV yield farming & staking, revenue pool optimization",how:"DeFi-layer: ILV staking contracts, sILV2 flash pool management."},
+  {name:"Big Time",icon:"\u23F3",tier:"rd",agents:0,lands:0,value:"$210K",status:"paused",pnl:"+8.1%",activity:"R&D: evaluating on-chain asset extraction pipeline",how:"Research phase: mapping on-chain vs. off-chain game economy."},
 ];
 export const STAKING_TIERS = [
   {tier:"Free",min:"0",discount:"0%",color:"#888",benefits:["3 agents","1 category","Basic signals"]},
@@ -82,29 +82,28 @@ export const TEST_TXS = [
   {id:"setApproval",name:"SET APPROVAL FOR ALL",fn:"setApprovalForAll(operator, true)",risk:90,verdict:"BLOCKED",label:"SET APPROVAL FOR ALL",
     flags:["SET_APPROVAL_FOR_ALL: NFT collection","AUTO-BLOCK: rule-002 triggered","OPERATOR: unverified address"],
     detail:"setApprovalForAll grants unlimited NFT transfer rights. HIGH severity.",detailColor:"#FF5252"},
-  {id:"swap",name:"SAFE SWAP",fn:"swapExactTokens(500 USDC → ETH)",risk:18,verdict:"APPROVED",label:"SAFE SWAP",
+  {id:"swap",name:"SAFE SWAP",fn:"swapExactTokens(500 USDC \u2192 ETH)",risk:18,verdict:"APPROVED",label:"SAFE SWAP",
     flags:["SWAP_ROUTE: Uniswap v3 verified","SLIPPAGE: 0.3% within limits","CONTRACT: verified + audited"],
     detail:"Swap within approved parameters. Route verified. APPROVED.",detailColor:"#A3FF12"},
   {id:"transfer",name:"OWNERSHIP TRANSFER",fn:"transferOwnership(newOwner)",risk:95,verdict:"BLOCKED",label:"OWNERSHIP TRANSFER",
     flags:["CRITICAL_FUNCTION: ownership change","MULTI_SIG_REQUIRED: not present","TIMELOCK: 48h required, not set"],
-    detail:"Requires multi-sig + 48h timelock. Single-signer — AUTO-BLOCK.",detailColor:"#FF5252"},
+    detail:"Requires multi-sig + 48h timelock. Single-signer \u2014 AUTO-BLOCK.",detailColor:"#FF5252"},
 ];
 export const PREFLIGHT_SCENARIOS = [
-  {id:"poison",icon:"😈",name:"Address Poisoning",desc:"Lookalike attacker address",color:"#FF5252",
+  {id:"poison",icon:"\u{1F608}",name:"Address Poisoning",desc:"Lookalike attacker address",color:"#FF5252",
     addr:"0xA1B2C3d4E5f6a7B8c9D0e1F2a3B4c5D6e7F8a9B2",amount:"$50,000,000",
     checks:[{n:"Denylist Check",r:"CLEAR"},{n:"Dust Quarantine Cross-Check",r:"CLEAR"},{n:"Address Poisoning Detection",r:"BLOCK"},{n:"Address Book Verification",r:"SKIP"},{n:"First-Time High Value",r:"SKIP"},{n:"Amount Anomaly Check",r:"SKIP"},{n:"ProtectionAgent Deep Scan",r:"SKIP"}],
     scanMs:284,riskScore:"100/100"},
-  {id:"dust",icon:"💨",name:"Dust-Then-Drain",desc:"Recipient sent micro-transactions",color:"#FF9800",
+  {id:"dust",icon:"\u{1F4A8}",name:"Dust-Then-Drain",desc:"Recipient sent micro-transactions",color:"#FF9800",
     addr:"0xDEAD9a2cF1b3A4d5E6f7B8c9d0E1f2A3b4C5d6E7",amount:"$5,000,000",
     checks:[{n:"Denylist Check",r:"CLEAR"},{n:"Dust Quarantine Cross-Check",r:"BLOCK"},{n:"Address Poisoning Detection",r:"SKIP"},{n:"Address Book Verification",r:"SKIP"},{n:"First-Time High Value",r:"SKIP"},{n:"Amount Anomaly Check",r:"SKIP"},{n:"ProtectionAgent Deep Scan",r:"SKIP"}],
     scanMs:198,riskScore:"100/100"},
-  {id:"firsttime",icon:"⚠️",name:"First-Time Large Transfer",desc:"New address, high value",color:"#FF9800",
+  {id:"firsttime",icon:"\u26A0\uFE0F",name:"First-Time Large Transfer",desc:"New address, high value",color:"#FF9800",
     addr:"0x9876FeDcBa5432107654AbCdEf0123456789AaBb",amount:"$1,200,000",
     checks:[{n:"Denylist Check",r:"CLEAR"},{n:"Dust Quarantine Cross-Check",r:"CLEAR"},{n:"Address Poisoning Detection",r:"CLEAR"},{n:"Address Book Verification",r:"WARN"},{n:"First-Time High Value",r:"BLOCK"},{n:"Amount Anomaly Check",r:"SKIP"},{n:"ProtectionAgent Deep Scan",r:"SKIP"}],
     scanMs:312,riskScore:"85/100"},
-  {id:"verified",icon:"✅",name:"Verified Counterparty",desc:"Known history, normal amount",color:"#A3FF12",
+  {id:"verified",icon:"\u2705",name:"Verified Counterparty",desc:"Known history, normal amount",color:"#A3FF12",
     addr:"0x1234AbCd5678EfGh9012IjKl3456MnOp7890QrSt",amount:"$25,000",
     checks:[{n:"Denylist Check",r:"CLEAR"},{n:"Dust Quarantine Cross-Check",r:"CLEAR"},{n:"Address Poisoning Detection",r:"CLEAR"},{n:"Address Book Verification",r:"CLEAR"},{n:"First-Time High Value",r:"CLEAR"},{n:"Amount Anomaly Check",r:"CLEAR"},{n:"ProtectionAgent Deep Scan",r:"CLEAR"}],
     scanMs:156,riskScore:"4/100"},
 ];
-// ═══ MOCK AI RESPONSES (replaces live API — no CORS issues) ═══
