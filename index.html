@@ -473,7 +473,7 @@ COMPANY: Gebrid Foundation LLC, Hallandale Beach FL. gebrid.io. partnerships@geb
     return fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: userMsg })
+      body: JSON.stringify({ message: userMsg, systemPrompt: GEBRID_SYSTEM, history: history.slice(-10) })
     })
     .then(function(response) {
       if (!response.ok) throw new Error("API error");
@@ -499,7 +499,7 @@ COMPANY: Gebrid Foundation LLC, Hallandale Beach FL. gebrid.io. partnerships@geb
     const newMessages = [...messages, {role:"user", content:userMsg}];
     setMessages(newMessages);
     setLoading(true);
-    callAPI(userMsg, messages).then(function(reply) {
+    callAPI(userMsg, newMessages.slice(0, -1)).then(function(reply) {
       setMessages(function(p){ return [...p, {role:"assistant", content:reply}]; });
       setLoading(false);
     });
