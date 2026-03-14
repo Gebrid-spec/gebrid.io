@@ -1,0 +1,11 @@
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:#333 transparent}
+body{background:#0A0A0A;font-family:'Inter',system-ui,-apple-system,sans-serif;color:#E0E0E0;overflow-x:hidden}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+::selection{background:#A3FF1240;color:#fff}
+input:focus{border-color:#A3FF12!important;outline:none}
+#loading{position:fixed;inset:0;background:#0A0A0A;display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:14px;transition:opacity 0.5s}
+.ld-logo{font-size:40px;font-weight:900;color:#A3FF12;letter-spacing:-2px}
+.ld-spin{width:22px;height:22px;border:2px solid #1F2937;border-top-color:#A3FF12;border-radius:50%;animation:spin 0.7s linear infinite}
+.ld-txt{font-size:11px;color:#444;letter-spacing:2px;text-transform:uppercase}

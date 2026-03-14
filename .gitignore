@@ -4,4 +4,8 @@
 !.dev.vars.example
 .env*
 !.env.example
+
+# build & deps
+node_modules/
+dist/
 public/
