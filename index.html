@@ -44,20 +44,16 @@ try{Babel.registerPreset&&0}catch(e){}
 <body>
 <div id="loading"><div class="ld-logo">GEBRID</div><div class="ld-spin"></div><div class="ld-txt">Initializing Agent OS</div></div>
 <div id="root"></div>
-
 <script type="text/babel">
-
 // ═══════════════════════════════════════
 // GEBRID MVP v2.1 — Investor Demo
 // JSX compiled by Babel Standalone
 // ═══════════════════════════════════════
 const { useState, useEffect, useCallback, useRef } = React;
 const { AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, CartesianGrid } = Recharts;
-
 // Hide loader once app boots
 document.getElementById('loading').style.opacity = '0';
 setTimeout(() => { const l = document.getElementById('loading'); if(l) l.remove(); }, 500);
-
 // ═══ MOCK DATA ═══
 const PORT_HIST = [
   {day:"Jan 30",value:395000000},{day:"Feb 2",value:391000000},{day:"Feb 5",value:399000000},
@@ -73,7 +69,6 @@ const PORT_HIST = [
 ];
 const DRAWDOWN   = Array.from({length:30},(_,i)=>({day:i+1,dd:-(Math.abs(Math.sin(i/4)*3.8)+Math.random()*1.2).toFixed(2)}));
 const MONTHLY_RET= ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"].map((m,i)=>({month:m,ret:+(Math.sin(i/2)*8+Math.random()*5-2).toFixed(1)}));
-
 const AGENTS = [
   {id:1,name:"GEBRID DCA Engine",strategy:"Institutional Dollar Cost Avg",status:"active",pnl:14.8,aum:125000000,risk:"low",chain:"Ethereum",trades:4280,uptime:"99.9%"},
   {id:2,name:"GEBRID Yield Core",strategy:"Auto-compound DeFi Yield",status:"active",pnl:22.4,aum:98000000,risk:"medium",chain:"Base",trades:2140,uptime:"99.8%"},
@@ -82,7 +77,6 @@ const AGENTS = [
   {id:5,name:"GEBRID RWA Bridge",strategy:"Real World Asset Tokenization",status:"active",pnl:6.9,aum:28000000,risk:"low",chain:"Ethereum",trades:124,uptime:"100%"},
   {id:6,name:"GEBRID GameFi Suite",strategy:"On-chain Land & NFT Trading",status:"active",pnl:38.7,aum:12000000,risk:"high",chain:"Polygon",trades:3450,uptime:"99.5%"},
 ];
-
 const STRATEGIES = [
   {id:1,name:"GEBRID Institutional DCA",desc:"Dollar-cost averaging into BTC/ETH with TWAP execution, slippage protection, and multi-exchange routing",apy:"12-18%",risk:"Low",minAum:"$1M",users:342,tags:["BTC/ETH","TWAP"],type:"accumulation"},
   {id:2,name:"GEBRID Yield Pro",desc:"Auto-compound across Aave, Compound, Lido with risk-adjusted position sizing and yield rotation",apy:"18-35%",risk:"Medium",minAum:"$5M",users:187,tags:["Yield","DeFi"],type:"yield"},
@@ -97,7 +91,6 @@ const STRATEGIES = [
   {id:11,name:"GEBRID Market Maker",desc:"Active liquidity provision on Uniswap v3, Balancer, Curve. Concentrated liquidity rebalancing with IL protection and fee APY optimization",apy:"15-40%",risk:"Medium",minAum:"$3M",users:78,tags:["Uniswap v3","LP","MM"],type:"mm"},
   {id:12,name:"GEBRID Governance Farmer",desc:"Institutional vote delegation, Votium/Hidden Hand incentives, veTokenomics optimization. Earn bribe revenue across Curve, Balancer, Aura",apy:"12-22%",risk:"Low",minAum:"$10M",users:41,tags:["Governance","veToken","Bribes"],type:"gov"},
 ];
-
 const RISK_EVENTS = [
   {time:"14:32:08",type:"blocked",agent:"GEBRID Alpha",desc:"Transaction exceeds max single-trade limit ($5M). Requires multi-sig approval.",sev:"high"},
   {time:"14:28:45",type:"warning",agent:"GEBRID Yield",desc:"Approaching concentration limit on Aave v3 (78%/80% of $98M position)",sev:"medium"},
@@ -106,14 +99,12 @@ const RISK_EVENTS = [
   {time:"13:58:11",type:"approved",agent:"GEBRID Treasury",desc:"Rebalance: USDC to USDT rotation $18.4M across 3 chains",sev:"low"},
   {time:"13:42:33",type:"warning",agent:"GEBRID RWA",desc:"T-Bill yield inversion detected: UST-3M < UST-6M. Strategy paused.",sev:"medium"},
 ];
-
 const ALLOC = [
   {name:"ETH",value:28,color:"#627EEA"},{name:"USDC",value:20,color:"#2775CA"},
   {name:"BTC",value:18,color:"#F7931A"},{name:"RWA/T-Bills",value:12,color:"#00C853"},
   {name:"USDT",value:8,color:"#26A17B"},{name:"DeFi LP",value:7,color:"#FF9800"},
   {name:"GameFi/NFT",value:4,color:"#E040FB"},{name:"Other",value:3,color:"#888"}
 ];
-
 const TX_PIPELINE = [
   {id:1,agent:"GEBRID DCA",action:"Buy 420 ETH (TWAP 4h)",amount:"$1.61M",status:"completed",steps:["Proposed","Screened","Approved","Executed"]},
   {id:2,agent:"GEBRID GameFi",action:"Acquire 8 Sandbox plots (sector 140-160)",amount:"96 ETH",status:"screening",steps:["Proposed","Screening...","",""]},
@@ -121,7 +112,6 @@ const TX_PIPELINE = [
   {id:4,agent:"GEBRID Alpha",action:"Sell 120 BTC (momentum exit)",amount:"$11.6M",status:"blocked",steps:["Proposed","Screened","BLOCKED",""]},
   {id:5,agent:"GEBRID RWA",action:"Tokenize T-Bill position",amount:"$8.2M",status:"completed",steps:["Proposed","Screened","Approved","Executed"]},
 ];
-
 const GAMEFI_WORLDS = [
   {name:"The Sandbox",icon:"🏜️",tier:"production",agents:8,lands:142,value:"1,840 ETH",status:"active",pnl:"+34.2%",activity:"Scouting sectors (140-220) via marketplace API, 12 bids active",how:"On-chain: marketplace smart contract interaction via ethers.js. Floor price monitoring, automated bidding, listing management across 142 plots."},
   {name:"Decentraland",icon:"🌐",tier:"production",agents:5,lands:89,value:"2,410 ETH",status:"active",pnl:"+18.9%",activity:"Listing 28 plots near Genesis Plaza, monitoring 4 districts",how:"On-chain: MANA/LAND contract calls. Price analytics engine scores parcels by proximity, traffic data, and comparable sales."},
@@ -130,7 +120,6 @@ const GAMEFI_WORLDS = [
   {name:"Illuvium",icon:"🎮",tier:"beta",agents:2,lands:0,value:"$420K",status:"active",pnl:"+15.3%",activity:"ILV yield farming & staking, revenue pool optimization",how:"DeFi-layer: ILV staking contracts, sILV2 flash pool management."},
   {name:"Big Time",icon:"⏳",tier:"rd",agents:0,lands:0,value:"$210K",status:"paused",pnl:"+8.1%",activity:"R&D: evaluating on-chain asset extraction pipeline",how:"Research phase: mapping on-chain vs. off-chain game economy."},
 ];
-
 const STAKING_TIERS = [
   {tier:"Free",min:"0",discount:"0%",color:"#888",benefits:["3 agents","1 category","Basic signals"]},
   {tier:"Bronze",min:"1K",discount:"10%",color:"#CD7F32",benefits:["5 agents","Auto-launch","Priority signals"]},
@@ -138,13 +127,11 @@ const STAKING_TIERS = [
   {tier:"Gold",min:"25K",discount:"35%",color:"#FFD700",benefits:["10 agents","Multi-chain","DeFi products"]},
   {tier:"Platinum",min:"100K",discount:"50%",color:"#E5E4E2",benefits:["Unlimited agents","White-label","DAO voting","Profit pool"]},
 ];
-
 const PROPOSALS = [
   {id:1,title:"Increase Staking APY to 18%",status:"active",votes:{f:847200,a:123400},end:"3d 14h",author:"0x7a2...f31"},
   {id:2,title:"Add Otherside to approved metaverses",status:"active",votes:{f:623100,a:89200},end:"5d 2h",author:"0xb4e...a82"},
   {id:3,title:"Reduce platform fee to 0.3%",status:"passed",votes:{f:1240000,a:320000},end:"Ended",author:"0x3c1...d47"},
 ];
-
 const TEST_TXS = [
   {id:"approve",name:"UNLIMITED APPROVE",fn:"approve(spender, MaxUint256)",risk:92,verdict:"BLOCKED",label:"UNLIMITED APPROVE",
     flags:["UNLIMITED_APPROVAL: MaxUint256 detected","AUTO-BLOCK: rule-001 triggered","DRAIN_RISK: spender unverified"],
@@ -159,7 +146,6 @@ const TEST_TXS = [
     flags:["CRITICAL_FUNCTION: ownership change","MULTI_SIG_REQUIRED: not present","TIMELOCK: 48h required, not set"],
     detail:"Requires multi-sig + 48h timelock. Single-signer — AUTO-BLOCK.",detailColor:"#FF5252"},
 ];
-
 const PREFLIGHT_SCENARIOS = [
   {id:"poison",icon:"😈",name:"Address Poisoning",desc:"Lookalike attacker address",color:"#FF5252",
     addr:"0xA1B2C3d4E5f6a7B8c9D0e1F2a3B4c5D6e7F8a9B2",amount:"$50,000,000",
@@ -178,7 +164,6 @@ const PREFLIGHT_SCENARIOS = [
     checks:[{n:"Denylist Check",r:"CLEAR"},{n:"Dust Quarantine Cross-Check",r:"CLEAR"},{n:"Address Poisoning Detection",r:"CLEAR"},{n:"Address Book Verification",r:"CLEAR"},{n:"First-Time High Value",r:"CLEAR"},{n:"Amount Anomaly Check",r:"CLEAR"},{n:"ProtectionAgent Deep Scan",r:"CLEAR"}],
     scanMs:156,riskScore:"4/100"},
 ];
-
 // ═══ MOCK AI RESPONSES (replaces live API — no CORS issues) ═══
 const AI_RESPONSES = {
   strategy: "GEBRID Agent OS — 12 autonomous strategies.\n\nКаждый агент = ERC-721 NFT + token-bound wallet (ERC-6551) + isolated sandbox + scoped permissions. Ни один агент не имеет постоянного доступа — каждое действие проходит через RiskEngine.\n\n📊 Capital:\n• DCA Engine — TWAP accumulation. Разбивает ордера по временным окнам, роутит через DEXs.\n• Yield Core — авторотация между Aave/Lido/Compound по on-chain ставкам. Auto-compound.\n• Treasury OS — ребалансировка multi-asset портфелей DAO/фондов. Compliance workflows.\n• Stablecoin Optimizer — zero directional risk. Ротация стейблов между Curve/Convex/Pendle/AAVE.\n\n⚡ Alpha:\n• Alpha Momentum — trend following по on-chain сигналам (volume, OI, funding rates).\n• Perps Trader — perpetuals на Hyperliquid/GMX/dYdX. Конфиг → Deploy → агент торгует 24/7.\n• Options Vault — covered calls, protective puts через Ribbon/Lyra/Dopex. Auto-rollover.\n• Market Maker — concentrated LP на Uniswap v3/Balancer/Curve. IL protection.\n\n🌐 Ecosystem:\n• GameFi Suite — on-chain land trading через marketplace контракты.\n• NFT Sniper — мониторинг минтов + secondary. Trait scoring + flip.\n• Governance Farmer — veToken delegation + bribe collection.\n• RWA Bridge — токенизация T-Bills/bonds. Compliant pipeline.\n\nДеплой: Builder → Strategy → Risk & Guard → Deploy.",
@@ -197,7 +182,6 @@ const AI_RESPONSES = {
   default: ["GEBRID Agent OS — 12 strategies · institutional DeFi infrastructure.\n\nClick a topic below or ask about: strategies, ZK privacy, guard agents, protection system, risk, tokenomics, GameFi, revenue model.",
             "GEBRID — AI-native infrastructure for Web3 capital management.\n\nTopics: strategies, ZK privacy tiers, guard agents, protection system, risk framework, revenue model, GameFi, perps, options, stablecoins, market making, governance."]
 };
-
 function getMockResponse(q) {
   q = q.toLowerCase();
   if(q.includes("perp")||q.includes("hyperliquid")||q.includes("gmx")||q.includes("dydx")||q.includes("futures")||q.includes("leverage")||q.includes("плеч")) return AI_RESPONSES.perps;
@@ -216,17 +200,13 @@ function getMockResponse(q) {
   if(q.includes("dca")||q.includes("yield")||q.includes("compar")||q.includes(" vs ")||q.includes("сравн")) return AI_RESPONSES.strategy;
   return AI_RESPONSES.default[Math.floor(Math.random()*2)];
 }
-
 // ═══ HELPERS ═══
 const fmt = n => n>=1e9?`$${(n/1e9).toFixed(2)}B`:n>=1e6?`$${(n/1e6).toFixed(1)}M`:n>=1e3?`$${(n/1e3).toFixed(1)}K`:`$${n}`;
-
 const StatusDot = ({s}) => <span style={{width:8,height:8,borderRadius:"50%",display:"inline-block",background:s==="active"?"#A3FF12":s==="paused"?"#FF9800":"#FF5252",marginRight:6}}/>;
-
 const RiskBadge = ({l}) => {
   const c={low:{bg:"#0d2818",fg:"#A3FF12"},medium:{bg:"#2a1f00",fg:"#FF9800"},high:{bg:"#2a0a0a",fg:"#FF5252"}}[l]||{bg:"#1F2937",fg:"#888"};
   return <span style={{background:c.bg,color:c.fg,padding:"2px 10px",borderRadius:12,fontSize:11,fontWeight:600,textTransform:"uppercase"}}>{l}</span>;
 };
-
 const Card = ({children,style,onClick}) =>
   <div onClick={onClick}
     style={{background:"#111827",borderRadius:12,border:"1px solid #1F2937",padding:20,transition:"border-color 0.2s",cursor:onClick?"pointer":"default",...style}}
@@ -234,7 +214,6 @@ const Card = ({children,style,onClick}) =>
     onMouseLeave={e=>{if(onClick)e.currentTarget.style.borderColor="#1F2937"}}>
     {children}
   </div>;
-
 const Metric = ({label,value,sub,trend,warn}) =>
   <Card style={{flex:"1 1 170px"}}>
     <div style={{fontSize:11,color:"#888",textTransform:"uppercase",letterSpacing:1,marginBottom:6}}>{label}</div>
@@ -244,19 +223,16 @@ const Metric = ({label,value,sub,trend,warn}) =>
       {sub&&<span style={{fontSize:11,color:"#666"}}>{sub}</span>}
     </div>}
   </Card>;
-
 const SideItem = ({icon,label,active,onClick,badge}) =>
   <div onClick={onClick} style={{display:"flex",alignItems:"center",gap:10,padding:"9px 16px",borderRadius:8,cursor:"pointer",background:active?"#A3FF1215":"transparent",color:active?"#A3FF12":"#888",fontWeight:active?600:400,fontSize:13,transition:"all 0.15s",borderLeft:active?"3px solid #A3FF12":"3px solid transparent"}}>
     <span style={{fontSize:16,width:20,textAlign:"center"}}>{icon}</span>
     <span style={{flex:1}}>{label}</span>
     {badge&&<span style={{background:badge==="AI"?"#A3FF12":"#E040FB",color:"#000",fontSize:9,fontWeight:700,padding:"1px 5px",borderRadius:6}}>{badge}</span>}
   </div>;
-
 const Btn = ({children,primary,onClick,disabled,style:s}) =>
   <button onClick={onClick} disabled={disabled} style={{padding:"10px 20px",borderRadius:8,border:primary?"none":"1px solid #333",background:primary?(disabled?"#555":"#A3FF12"):"transparent",color:primary?"#000":"#fff",fontSize:13,fontWeight:primary?700:400,cursor:disabled?"wait":"pointer",fontFamily:"inherit",transition:"all 0.15s",...s}}>
     {children}
   </button>;
-
 const RiskRing = ({score,size=80}) => {
   const r=32,circ=2*Math.PI*r,offset=circ*(1-score/100);
   const color=score>=70?"#FF5252":score>=40?"#FF9800":"#A3FF12";
@@ -267,7 +243,6 @@ const RiskRing = ({score,size=80}) => {
     <text x="40" y="44" textAnchor="middle" fill={color} fontSize="20" fontWeight="800" fontFamily="monospace">{score}</text>
   </svg>;
 };
-
 // ═══ DASHBOARD ═══
 function DashboardView() {
   return <div>
@@ -397,7 +372,6 @@ function DashboardView() {
     </Card>
   </div>;
 }
-
 // ═══ AI CONSOLE (mock responses — no CORS issues) ═══
 const SUGGESTIONS = [
   {label:"Strategy returns YTD",q:"Show all strategy returns YTD"},
@@ -411,7 +385,6 @@ const SUGGESTIONS = [
   {label:"GameFi ETH",q:"How much ETH do GameFi agents manage?"},
   {label:"Stablecoins for family office",q:"Stablecoin strategy for family office"},
 ];
-
 function AIConsoleView() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
@@ -419,23 +392,18 @@ function AIConsoleView() {
   const [mode, setMode] = useState("detecting"); // "live" | "mock" | "detecting"
   const bottomRef = useRef(null);
   useEffect(()=>{bottomRef.current?.scrollIntoView({behavior:"smooth"})},[messages]);
-
   const GEBRID_SYSTEM = `You are GEBRID AI Assistant — the built-in intelligence layer of the GEBRID Agent OS platform. You answer questions about the platform, its features, architecture, tokenomics, and security. Be concise, technical, and direct. No fluff. Use bullet points sparingly. Respond in the same language the user writes in.
-
 GEBRID PLATFORM:
 AI-native infrastructure for institutional on-chain capital management. 6 products: GEBRID Core (agent orchestration), GEBRID Hive (zero-code builder, 50+ templates), GEBRID OS (capital management, 6-layer security), DePC (talent launchpad FORGE→ARENA→LABEL), DeFi Engine (staking, liquidity, RWA), AI Wallet (Web3 debit cards, crypto+fiat bridge).
-
 12 STRATEGIES:
 Capital: DCA Engine (TWAP accumulation, multi-DEX routing), Yield Core (auto-rotate Aave/Lido/Compound, auto-compound), Treasury OS (multi-asset DAO/fund rebalancing, compliance), Stablecoin Optimizer (zero directional, Curve/Convex/Pendle/AAVE rotation).
 Alpha: Alpha Momentum (trend following, on-chain signals), Perps Trader (Hyperliquid/GMX/dYdX, one-click deploy), Options Vault (covered calls/puts, Ribbon/Lyra/Dopex, auto-rollover), Market Maker (concentrated LP Uniswap v3/Balancer/Curve, IL protection).
 Ecosystem: GameFi Suite (on-chain land trading Sandbox/Decentraland/Otherside), NFT Sniper (mint monitoring, trait scoring, flip), Governance Farmer (veToken delegation, bribe collection Votium/Hidden Hand), RWA Bridge (T-Bill/bond tokenization).
-
 AGENT ARCHITECTURE:
 Each agent = ERC-721 NFT (identity) + ERC-6551 token-bound account (wallet) + scoped permissions (EIP-712 + ERC-1271) + sandbox isolation. No agent has permanent access. Every action passes through RiskEngine.sol which is the FINAL AUTHORITY — not AI.
 9 contracts: AgentNFT (721+4906+2981), AgentTemplate1155, AgentAccountRegistry (6551), AgentPermissions (712+1271), RiskEngine, AgentExecutor, TreasuryVault, AgentRegistry, CredentialNFT (5192 soulbound).
 Key principle: identity ≠ wallet ≠ permission ≠ risk authority.
 Deploy on Base chain. ERC-4337 native.
-
 6 GUARD AGENTS (protection layer, NOT trading):
 1. Dust Filter — detects micro-tx from unknown wallets, quarantines dust addresses
 2. Address Poisoning — detects lookalike addresses, compares with address book
@@ -444,31 +412,24 @@ Deploy on Base chain. ERC-4337 native.
 5. Flash Loan Guard — detects flash loan patterns, pauses agent during attacks
 6. MEV Protection — routes through Flashbots Protect, prevents validator extraction
 Guards are deterministic rule engines, NOT AI opinions.
-
 PROTECTION SYSTEM:
 Pre-Flight Scanner — 7 checks before every transfer: Denylist, Dust Quarantine, Address Poisoning, Address Book Verification, First-Time High Value, Amount Anomaly, ProtectionAgent Deep Scan. First BLOCK wins.
 Protection Agent Simulator — tests 4 TX types: Unlimited Approve (auto-block MaxUint256), SetApprovalForAll (auto-block NFT bulk), Safe Swap (approve if verified), Ownership Transfer (block without multisig+timelock).
 Time-Locks: >$1M=4h, >$5M=24h, >$10M=48h+multisig.
-
 6-LAYER SECURITY:
 1. Pre-Sign Screening 2. Time-Locks 3. Least-Privilege 4. Sandbox Isolation 5. On-Chain Audit 6. Anti-Pressure (no override without multisig)
-
 ZK PRIVACY — 3 tiers:
 Standard (Free): full transparency. ZK-Shielded ($99/mo or hold 50K $GEBRID or stake 10K): positions encrypted, selective disclosure. Full ZK ($299/mo or hold 200K $GEBRID or stake 100K): wallet+amounts+strategy encrypted, regulatory selective disclosure only.
 Tech: ZK-SNARKs, on-chain verifier contracts, commitment schemes. Token gate: hold=permanent, stake=cheaper.
-
 $GEBRID TOKENOMICS:
 1B supply, $0.04 listing, $40M FDV, TGE circulating 109M (10.9%), init mcap $4.36M.
 Rounds: Angel $0.007 (SOLD), Pre-seed $0.01 (43% raised), Seed $0.02 (raising $1.6M), Private $0.03 ($3.6M), Public $0.04 ($4M). Total raise $10.25M.
 Allocation: Community 17%, Treasury 15%, Private 12%, Team 10%, Public 10%, Marketing 8%, Seed 8%, Pre-seed 7%, Liquidity 5%, Angel 5%, Airdrop 3%.
 Staking tiers: Free(0)/Bronze(1K)/Silver(5K)/Gold(25K)/Platinum(100K). Platinum = unlimited agents + DAO voting + profit pool.
 Liquidity pools: GEBRID/USDC, GEBRID/ETH, GEBRID/AERO on Base.
-
 REVENUE — 7 streams:
 AI Constructor SaaS, DePC Contracts & Royalties, NFT Marketplace, AI Debit Cards, DeFi Platform fees, GameFi Agents, Boost Features. Plus ZK Privacy tiers and staking access.
-
 COMPANY: Gebrid Foundation LLC, Hallandale Beach FL. gebrid.io. partnerships@gebrid.io.`;
-
   const callAPI = (userMsg, history) => {
     return fetch('/api/chat', {
       method: 'POST',
@@ -491,7 +452,6 @@ COMPANY: Gebrid Foundation LLC, Hallandale Beach FL. gebrid.io. partnerships@geb
       return getMockResponse(userMsg);
     });
   };
-
   const send = (text) => {
     const userMsg = (text||input).trim();
     if(!userMsg||loading) return;
@@ -504,9 +464,7 @@ COMPANY: Gebrid Foundation LLC, Hallandale Beach FL. gebrid.io. partnerships@geb
       setLoading(false);
     });
   };
-
   const isEmpty = messages.length===0;
-
   return <div style={{display:"flex",flexDirection:"column",height:"calc(100vh - 120px)"}}>
     <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:12}}>
       <h2 style={{fontSize:20,fontWeight:700,color:"#fff",margin:0}}>AI Agent Console</h2>
@@ -560,7 +518,6 @@ COMPANY: Gebrid Foundation LLC, Hallandale Beach FL. gebrid.io. partnerships@geb
     </Card>
   </div>;
 }
-
 // ═══ PIPELINE ═══
 function PipelineView() {
   const sc={completed:"#A3FF12",screening:"#FF9800",approved:"#2196F3",blocked:"#FF5252"};
@@ -589,7 +546,6 @@ function PipelineView() {
   </div>;
 }
 </script>
-
 <script type="text/babel">
 // ═══ VESTING NFT MARKETPLACE ═══
 // ═══ SHIELDED ROUNDS ═══
@@ -600,7 +556,6 @@ const SHIELDED_ROUNDS=[
   {id:"SR-004",name:"Private Round",status:"upcoming",raised:"$0",target:"$3.6M",pct:0,investors:0,minEntry:"$250K",maxEntry:"$2M",lockup:"12 months",zkProof:null,proofStatus:"pending",chain:"Ethereum",tge:"Q3 2026",vesting:"12mo linear after 3mo cliff",color:"#E040FB",price:"$0.03",tokens:"120M",tgeUnlock:"10%",discount:"25%"},
   {id:"SR-005",name:"Public Round",status:"upcoming",raised:"$0",target:"$4M",pct:0,investors:0,minEntry:"$100",maxEntry:"$50K",lockup:"6 months",zkProof:null,proofStatus:"pending",chain:"Ethereum",tge:"Q3 2026",vesting:"6mo linear after 1mo cliff",color:"#00E5FF",price:"$0.04",tokens:"100M",tgeUnlock:"10%",discount:"—"},
 ];
-
 function ShieldedRoundsView() {
   const [selected,setSelected]=useState(null);
   const [verifying,setVerifying]=useState(null);
@@ -608,35 +563,29 @@ function ShieldedRoundsView() {
   const [commitModal,setCommitModal]=useState(null);
   const [commitAmt,setCommitAmt]=useState("");
   const [commitStep,setCommitStep]=useState(0);
-
   const runVerify=(id)=>{
     setVerifying(id);
     setTimeout(()=>{setVerifying(null);setVerified(p=>({...p,[id]:true}))},1400);
   };
-
   const runCommit=()=>{
     setCommitStep(1);
     setTimeout(()=>setCommitStep(2),800);
     setTimeout(()=>setCommitStep(3),1600);
     setTimeout(()=>setCommitStep(4),2400);
   };
-
   const statusC={active:"#FF9800",upcoming:"#5BA3E6",closed:"#FF5252"};
   const statusL={active:"● RAISING",upcoming:"◐ UPCOMING",closed:"✓ SOLD OUT"};
-
   return <div>
     <div style={{marginBottom:24}}>
       <h2 style={{fontSize:24,fontWeight:800,color:"#fff",margin:"0 0 6px"}}>🔒 Shielded Rounds — <span style={{color:"#A3FF12"}}>ZK-Verified Fundraising</span></h2>
       <p style={{fontSize:13,color:"#888",margin:0,maxWidth:620,lineHeight:1.5}}>Institutional investors participate in funding rounds with zero-knowledge identity verification. Commitment sizes, wallet addresses, and investor identities remain encrypted — only aggregate totals are public.</p>
     </div>
-
     <div style={{display:"flex",gap:12,flexWrap:"wrap",marginBottom:20}}>
       <Metric label="Total Raised" value="$650K" trend={14.2} sub="Angel + Pre-seed"/>
       <Metric label="Target Total" value="$10.25M" sub="across 5 rounds"/>
       <Metric label="Investors" value="🔐" sub="identities shielded"/>
       <Metric label="Next Round" value="Seed $0.02" sub="raising $1.6M"/>
     </div>
-
     <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(300px,1fr))",gap:16,marginBottom:20}}>
       {SHIELDED_ROUNDS.map(r=>{
         const isVer=verified[r.id];
@@ -648,7 +597,6 @@ function ShieldedRoundsView() {
             </div>
             <span style={{padding:"3px 10px",borderRadius:4,background:`${statusC[r.status]}20`,color:statusC[r.status],fontSize:10,fontWeight:700,fontFamily:"monospace"}}>{statusL[r.status]}</span>
           </div>
-
           <div style={{marginBottom:12}}>
             <div style={{display:"flex",justifyContent:"space-between",fontSize:11,marginBottom:4}}>
               <span style={{color:"#aaa"}}>Raised</span>
@@ -659,7 +607,6 @@ function ShieldedRoundsView() {
             </div>
             <div style={{fontSize:10,color:"#555",marginTop:3}}>{typeof r.investors==="string"?"identities shielded":r.investors+" participants"} · ZK-encrypted</div>
           </div>
-
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:12}}>
             <div style={{padding:"8px",borderRadius:6,background:"#0A0A0A",textAlign:"center"}}>
               <div style={{fontSize:9,color:"#666",marginBottom:2}}>MIN ENTRY</div>
@@ -670,7 +617,6 @@ function ShieldedRoundsView() {
               <div style={{fontSize:12,fontWeight:700,color:"#fff"}}>{r.lockup}</div>
             </div>
           </div>
-
           {selected===r.id&&<div style={{borderTop:"1px solid #1F2937",paddingTop:12,marginBottom:12}}>
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6,fontSize:12}}>
               {[["Price",r.price],["Tokens",r.tokens],["Discount",r.discount],["TGE Unlock",r.tgeUnlock],["Chain",r.chain],["TGE",r.tge],["Max Entry",r.maxEntry],["Vesting",r.vesting]].map(([k,v],i)=>
@@ -680,7 +626,6 @@ function ShieldedRoundsView() {
               )}
             </div>
           </div>}
-
           <div style={{padding:"8px 12px",borderRadius:6,background:isVer?"#051a05":"#0a0a14",border:`1px solid ${isVer?"#A3FF1230":"#1F2937"}`,marginBottom:10}}>
             <div style={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>
               <div style={{display:"flex",alignItems:"center",gap:6}}>
@@ -690,7 +635,6 @@ function ShieldedRoundsView() {
               {r.zkProof&&<span style={{fontSize:10,color:r.status==="closed"||r.status==="active"?"#A3FF1280":"#555",fontFamily:"monospace"}}>{r.status==="closed"||r.status==="active"?"🔐 shielded":r.zkProof}</span>}
             </div>
           </div>
-
           <div style={{display:"flex",gap:6}}>
             {r.zkProof&&<button onClick={e=>{e.stopPropagation();runVerify(r.id)}} disabled={verifying===r.id} style={{flex:1,padding:"8px",borderRadius:6,border:`1px solid ${isVer?"#A3FF1240":"#333"}`,background:isVer?"#A3FF1210":"transparent",color:isVer?"#A3FF12":"#888",fontSize:11,cursor:"pointer",fontFamily:"monospace",fontWeight:600}}>
               {verifying===r.id?"VERIFYING...":isVer?"✓ VERIFIED":"Verify Proof"}
@@ -702,7 +646,6 @@ function ShieldedRoundsView() {
         </Card>;
       })}
     </div>
-
     <Card style={{background:"#0a0a14",border:"1px solid #1a1a3a"}}>
       <div style={{fontSize:12,fontWeight:700,color:"#5BA3E6",letterSpacing:1,marginBottom:14,fontFamily:"monospace"}}>🛡️ HOW SHIELDED ROUNDS WORK</div>
       <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:12}}>
@@ -719,7 +662,6 @@ function ShieldedRoundsView() {
         </div>)}
       </div>
     </Card>
-
     {commitModal&&<div style={{position:"fixed",inset:0,background:"#000a",display:"flex",alignItems:"center",justifyContent:"center",zIndex:1000}} onClick={()=>setCommitModal(null)}>
       <div style={{background:"#111827",borderRadius:16,border:`1px solid ${commitModal.color}`,padding:28,maxWidth:460,width:"90%"}} onClick={e=>e.stopPropagation()}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
@@ -729,7 +671,6 @@ function ShieldedRoundsView() {
           </div>
           <button onClick={()=>setCommitModal(null)} style={{background:"transparent",border:"none",color:"#666",fontSize:18,cursor:"pointer"}}>✕</button>
         </div>
-
         {commitStep===0&&<div>
           <div style={{padding:"12px 16px",borderRadius:8,background:"#0A0A0A",fontSize:12,marginBottom:16}}>
             {[["Round",commitModal.name],["Min",commitModal.minEntry],["Max",commitModal.maxEntry],["Lockup",commitModal.lockup],["Vesting",commitModal.vesting]].map(([k,v],i)=>
@@ -747,7 +688,6 @@ function ShieldedRoundsView() {
             Generate ZK Proof & Commit →
           </button>
         </div>}
-
         {commitStep>0&&<div>
           {[
             {label:"Generating ZK identity proof",icon:"🔐"},
@@ -769,7 +709,6 @@ function ShieldedRoundsView() {
     </div>}
   </div>;
 }
-
 const VESTING_NFTS=[
   {id:"#0042",round:"Seed",tokens:"14,285,714",ticker:"$GEBRID",price:"$0.02",cliff:6,cliffPassed:4,vesting:24,vestingPassed:8,claimed:"2,380,952",marketVal:"$1.42M",askPrice:"$854K",discount:"40%",color:"#5BA3E6"},
   {id:"#0018",round:"Angel",tokens:"8,571,428",ticker:"$GEBRID",price:"$0.007",cliff:6,cliffPassed:6,vesting:18,vestingPassed:12,claimed:"5,714,285",marketVal:"$857K",askPrice:"$550K",discount:"36%",color:"#A3FF12"},
@@ -874,7 +813,6 @@ function VestingNFTView() {
     </div>}
   </div>;
 }
-
 // ═══ MARKETPLACE ═══
 // Extra metadata per strategy
 const STRAT_META = {
@@ -891,7 +829,6 @@ const STRAT_META = {
   11:{deployed:124,trend:"stable",verified:true,weekly:"+1.8%",equityCurve:[100,102,105,107,110,108,112,115,117,115,119,122,120,124,127],fee:"0.2% mgmt · 5% perf",algo:"T-Bill tokenization via compliant pipeline, on-chain yield distribution, audited smart contracts"},
   12:{deployed:567,trend:"up",verified:false,weekly:"+7.4%",equityCurve:[100,109,120,128,138,130,142,155,162,154,168,180,172,185,195],fee:"1.8% mgmt · 25% perf",algo:"Trait-rarity ML model, gas-optimized sniper, instant flip logic on Blur/OpenSea"},
 };
-
 function MiniChart({data,color="#A3FF12"}) {
   if(!data||data.length<2) return null;
   const w=120,h=36,min=Math.min(...data),max=Math.max(...data),range=max-min||1;
@@ -900,7 +837,6 @@ function MiniChart({data,color="#A3FF12"}) {
     <polyline points={pts} fill="none" stroke={color} strokeWidth="1.5" strokeLinejoin="round"/>
   </svg>;
 }
-
 function MarketplaceView({onDeploy}) {
   const [filter,setFilter] = useState("all");
   const [sort,setSort] = useState("popular");
@@ -909,10 +845,8 @@ function MarketplaceView({onDeploy}) {
   const [compareList,setCompareList] = useState([]);
   const [showCompare,setShowCompare] = useState(false);
   const [watchlist,setWatchlist] = useState([]);
-
   const types = ["all","accumulation","yield","treasury","rwa","gamefi","perps","options","stables","mm","gov"];
   const typeLabels = {all:"All",accumulation:"DCA",yield:"Yield",treasury:"Treasury",rwa:"RWA",gamefi:"🎮 GameFi",perps:"📈 Perps",options:"🏛️ Options",stables:"🔒 Stables",mm:"💧 MM",gov:"🗳️ Gov"};
-
   const enriched = STRATEGIES.map(s=>({...s,...(STRAT_META[s.id]||{})}));
   
   const filtered = enriched
@@ -925,13 +859,10 @@ function MarketplaceView({onDeploy}) {
       if(sort==="risk") return ["low","medium","high"].indexOf(a.risk.toLowerCase())-["low","medium","high"].indexOf(b.risk.toLowerCase());
       return 0;
     });
-
   const toggleCompare = (s) => {
     setCompareList(prev=>prev.find(x=>x.id===s.id)?prev.filter(x=>x.id!==s.id):prev.length<3?[...prev,s]:prev);
   };
-
   const toggleWatch = (id) => setWatchlist(prev=>prev.includes(id)?prev.filter(x=>x!==id):[...prev,id]);
-
   // DETAIL VIEW
   if(selectedDetail) {
     const s = selectedDetail;
@@ -992,7 +923,6 @@ function MarketplaceView({onDeploy}) {
       </div>
     </div>;
   }
-
   // COMPARE VIEW
   if(showCompare&&compareList.length>=2) {
     const rows = [
@@ -1048,7 +978,6 @@ function MarketplaceView({onDeploy}) {
       </div>
     </div>;
   }
-
   // MAIN LIST
   return <div>
     {/* Header */}
@@ -1065,7 +994,6 @@ function MarketplaceView({onDeploy}) {
           {watchlist.length>0&&<span style={{fontSize:11,color:"#A3FF12"}}>★ {watchlist.length} watchlisted</span>}
         </div>
       </div>
-
       {/* Top Performers Banner */}
       <div style={{padding:"12px 16px",borderRadius:10,background:"#0a0f0a",border:"1px solid #A3FF1230",marginBottom:14}}>
         <div style={{fontSize:11,color:"#A3FF12",fontWeight:700,letterSpacing:1,marginBottom:8}}>🏆 TOP PERFORMERS THIS WEEK</div>
@@ -1078,7 +1006,6 @@ function MarketplaceView({onDeploy}) {
           </div>)}
         </div>
       </div>
-
       {/* Search + Sort + Filter */}
       <div style={{display:"flex",gap:8,flexWrap:"wrap",marginBottom:10}}>
         <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="🔍 Search strategy or tag..."
@@ -1091,7 +1018,6 @@ function MarketplaceView({onDeploy}) {
           <option value="risk">Sort: Lowest Risk</option>
         </select>
       </div>
-
       {/* Type filters */}
       <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
         {types.map(t=><button key={t} onClick={()=>setFilter(t)} style={{padding:"5px 12px",borderRadius:6,border:"none",cursor:"pointer",fontSize:11,fontFamily:"inherit",background:filter===t?"#A3FF12":"#1F2937",color:filter===t?"#000":"#888"}}>
@@ -1102,10 +1028,8 @@ function MarketplaceView({onDeploy}) {
         </button>
       </div>
     </div>
-
     {/* Vesting NFT Marketplace */}
     {filter==="vesting_nft"&&<VestingNFTView/>}
-
     {/* Cards Grid — hidden for vesting_nft */}
     {filter!=="vesting_nft"&&<div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(290px,1fr))",gap:14}}>
       {filtered.map(s=>{
@@ -1125,20 +1049,16 @@ function MarketplaceView({onDeploy}) {
             </div>
             <RiskBadge l={s.risk.toLowerCase()}/>
           </div>
-
           {/* Mini chart + weekly */}
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
             <MiniChart data={m.equityCurve} color={m.weekly&&m.weekly.startsWith("+")?"#A3FF12":"#FF5252"}/>
             <span style={{fontSize:13,fontWeight:700,color:"#A3FF12"}}>{m.weekly}</span>
           </div>
-
           <p style={{fontSize:11,color:"#999",lineHeight:1.4,margin:"0 0 8px",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{s.desc}</p>
-
           {/* Tags */}
           <div style={{display:"flex",gap:4,flexWrap:"wrap",marginBottom:10}}>
             {s.tags.map(t=><span key={t} style={{background:`${tagColor}15`,color:tagColor,padding:"2px 7px",borderRadius:4,fontSize:10,border:`1px solid ${tagColor}30`}}>{t}</span>)}
           </div>
-
           {/* Metrics row */}
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:6,marginBottom:10}}>
             <div style={{padding:"6px 8px",borderRadius:6,background:"#0A0A0A",textAlign:"center"}}>
@@ -1154,14 +1074,12 @@ function MarketplaceView({onDeploy}) {
               <div style={{fontSize:12,fontWeight:700,color:"#5BA3E6"}}>{(m.deployed||0).toLocaleString()}</div>
             </div>
           </div>
-
           {/* Live deploy counter */}
           <div style={{display:"flex",alignItems:"center",gap:5,marginBottom:12}}>
             <span style={{width:6,height:6,borderRadius:"50%",background:"#A3FF12",boxShadow:"0 0 4px #A3FF12"}}/>
             <span style={{fontSize:10,color:"#A3FF12"}}>{(m.deployed||0).toLocaleString()} agents running now</span>
             <span style={{marginLeft:"auto",fontSize:10,color:"#666"}}>{s.users.toLocaleString()} users</span>
           </div>
-
           {/* Action buttons */}
           <div style={{display:"flex",gap:6,marginTop:"auto"}}>
             <button onClick={()=>setSelectedDetail(s)} style={{flex:1,padding:"7px",borderRadius:6,border:"1px solid #333",background:"transparent",color:"#888",fontSize:11,cursor:"pointer",fontFamily:"inherit"}}>
@@ -1182,7 +1100,6 @@ function MarketplaceView({onDeploy}) {
     </div>}
   </div>;
 }
-
 // ═══ RISK ═══
 function RiskView() {
   const icons={blocked:"⛔",warning:"⚠️",approved:"✅"};
@@ -1224,7 +1141,6 @@ function RiskView() {
     </div>
   </div>;
 }
-
 // ═══ ANALYTICS ═══
 function AnalyticsView() {
   return <div>
@@ -1280,7 +1196,6 @@ function AnalyticsView() {
     </Card>
   </div>;
 }
-
 // ═══ GAMEFI ═══
 function GameFiView() {
   const [expanded, setExpanded] = useState(null);
@@ -1346,12 +1261,10 @@ function GameFiView() {
     </Card>
   </div>;
 }
-
 // ═══ STAKING ═══
 function StakingView() {
   const WALLET = "0x9a5a...fb13";
   const NETWORK = "Sepolia Testnet";
-
   // My position
   const myStaked = 47500;
   const myLockEnd = "Sep 14, 2025";
@@ -1359,17 +1272,14 @@ function StakingView() {
   const myTierColor = "#FFD700";
   const earned = 2847;
   const pendingReward = 312.4;
-
   const [stakeAmt,setStakeAmt]=useState("10000");
   const [lockDays,setLockDays]=useState(90);
   const [voted,setVoted]=useState({});
   const [justStaked,setJustStaked]=useState(false);
   const [claimed,setClaimed]=useState(false);
-
   const tier=Number(stakeAmt)>=100000?"Platinum":Number(stakeAmt)>=25000?"Gold":Number(stakeAmt)>=5000?"Silver":Number(stakeAmt)>=1000?"Bronze":"Free";
   const tierColor={"Platinum":"#E5E4E2","Gold":"#FFD700","Silver":"#C0C0C0","Bronze":"#CD7F32","Free":"#666"}[tier];
   const apy=lockDays>=365?22:lockDays>=180?18:lockDays>=90?15:12;
-
   // Live stakers feed
   const LIVE_FEED = [
     {addr:"0x3f2a...c891",action:"staked",amount:"250,000",tier:"Platinum",ago:"12s"},
@@ -1381,9 +1291,7 @@ function StakingView() {
     {addr:"0x9a5a...fb13",action:"staked",amount:"47,500",tier:"Gold",ago:"6m",isMe:true},
     {addr:"0x44fa...9d01",action:"claimed",amount:"892",tier:"Bronze",ago:"8m"},
   ];
-
   const actionColor={staked:"#A3FF12",claimed:"#5BA3E6",unstaked:"#FF5252",voted:"#E040FB"};
-
   return <div>
     <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20,flexWrap:"wrap",gap:12}}>
       <h2 style={{fontSize:20,fontWeight:700,color:"#fff",margin:0}}>$GEBRID Staking & Governance</h2>
@@ -1394,7 +1302,6 @@ function StakingView() {
         <span style={{fontSize:11,color:"#666"}}>{NETWORK}</span>
       </div>
     </div>
-
     {/* Global metrics */}
     <div style={{display:"flex",gap:12,flexWrap:"wrap",marginBottom:16}}>
       <Metric label="Total Staked" value="423M" sub="$GEBRID · 42.3% supply"/>
@@ -1402,7 +1309,6 @@ function StakingView() {
       <Metric label="Avg APY" value="16.8%" sub="weighted average"/>
       <Metric label="Your Tier" value={myTier} sub={`${myStaked.toLocaleString()} $GEBRID staked`}/>
     </div>
-
     {/* MY POSITION CARD */}
     <div style={{padding:"16px 20px",borderRadius:12,background:"linear-gradient(135deg,#0d1a0d,#111827)",border:`1px solid ${myTierColor}40`,marginBottom:16}}>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",flexWrap:"wrap",gap:12}}>
@@ -1439,7 +1345,6 @@ function StakingView() {
         </div>
       </div>
     </div>
-
     <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16,marginBottom:16}}>
       {/* Stake form */}
       <Card>
@@ -1481,7 +1386,6 @@ function StakingView() {
           TX: 0x7f3a...e912 · Sepolia · Confirming...
         </div>}
       </Card>
-
       {/* Tier benefits */}
       <Card>
         <div style={{fontSize:14,fontWeight:600,marginBottom:12,color:"#fff"}}>Tier Benefits</div>
@@ -1499,7 +1403,6 @@ function StakingView() {
         })}
       </Card>
     </div>
-
     <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16,marginBottom:16}}>
       {/* Live stakers feed */}
       <Card>
@@ -1520,7 +1423,6 @@ function StakingView() {
           </div>)}
         </div>
       </Card>
-
       {/* Governance */}
       <Card>
         <div style={{fontSize:14,fontWeight:600,marginBottom:12,color:"#fff"}}>Governance Proposals</div>
@@ -1554,7 +1456,6 @@ function StakingView() {
     </div>
   </div>;
 }
-
 // ═══ GUARD AGENTS ═══
 function GuardView() {
   const [tab,setTab]=useState("simulator");
@@ -1569,12 +1470,10 @@ function GuardView() {
   const [preflightDone,setPreflightDone]=useState(false);
   const [scanTime,setScanTime]=useState(0);
   const rColors={CLEAR:"#A3FF12",BLOCK:"#FF5252",WARN:"#FF9800",SKIP:"#444"};
-
   const runEval=(tx)=>{
     setSelectedTx(tx.id);setEvalResult(null);setAnimating(true);
     setTimeout(()=>{setEvalResult(tx);setAnimating(false);if(tx.verdict==="BLOCKED")setBlockedToday(p=>p+1);else setApprovedToday(p=>p+1)},800);
   };
-
   const runPreflight=(scenario)=>{
     setSelectedScenario(scenario);setPreflightRunning(true);setPreflightDone(false);setPreflightChecks([]);
     const start=Date.now();
@@ -1586,7 +1485,6 @@ function GuardView() {
       },(i+1)*280);
     });
   };
-
   return <div>
     <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20,flexWrap:"wrap",gap:12}}>
       <div>
@@ -1599,7 +1497,6 @@ function GuardView() {
         )}
       </div>
     </div>
-
     {tab==="simulator"&&<Card style={{background:"#0a0f0a",border:"1px solid #1a2a1a",padding:0,overflow:"hidden"}}>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"12px 20px",borderBottom:"1px solid #1a2a1a"}}>
         <span style={{fontSize:13,fontWeight:700,color:"#999",fontFamily:"monospace",letterSpacing:1}}>⚡ PROTECTION AGENT · LIVE SIMULATOR</span>
@@ -1640,7 +1537,6 @@ function GuardView() {
         <span style={{color:"#666"}}>APPROVED <span style={{color:"#A3FF12",fontWeight:700}}>{approvedToday.toLocaleString()}</span></span>
       </div>
     </Card>}
-
     {tab==="preflight"&&<div>
       <div style={{marginBottom:24}}>
         <h3 style={{fontSize:28,fontWeight:800,color:"#fff",margin:"0 0 8px",lineHeight:1.2}}>$50M almost left to the wrong wallet. <span style={{color:"#A3FF12"}}>7 layers caught it.</span></h3>
@@ -1698,7 +1594,6 @@ function GuardView() {
         </div>
       </Card>
     </div>}
-
     {tab==="quarantine"&&<div>
       <div style={{marginBottom:24}}>
         <h3 style={{fontSize:28,fontWeight:800,color:"#fff",margin:"0 0 8px"}}>Dust attacks caught <span style={{color:"#FF9800"}}>before they touch your wallet.</span></h3>
@@ -1743,43 +1638,35 @@ function GuardView() {
         </div>
       </Card>
     </div>}
-
     {tab==="zkprivacy"&&<ZKPrivacyView/>}
-
     <style>{`@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}`}</style>
   </div>;
 }
-
 // ═══ ZK PRIVACY VIEW ═══
 function ZKPrivacyView() {
   const [kycMode,setKycMode]=useState("Regulator");
   const [verifying,setVerifying]=useState(false);
   const [verified,setVerified]=useState(false);
   const [proofHash]=useState("0x7a3f9b2c...e84d1f");
-
   const runVerify=()=>{
     setVerifying(true);setVerified(false);
     setTimeout(()=>{setVerifying(false);setVerified(true)},1600);
   };
-
   const DISCLOSURE={
     "Public":    {fields:["KYC Status","Jurisdiction","Accredited"],values:["✅ VERIFIED","✅ PERMITTED","✅ YES"],hidden:["Name","Wallet","Amount","Institution"]},
     "Auditor":   {fields:["KYC Status","Jurisdiction","Accredited","Institution type"],values:["✅ VERIFIED","✅ PERMITTED","✅ YES","Family Office"],hidden:["Name","Wallet","Amount"]},
     "Regulator": {fields:["KYC Status","Jurisdiction","Accredited","Institution","Amount range"],values:["✅ VERIFIED","✅ PERMITTED","✅ YES","[REDACTED]","$1M–$10M"],hidden:["Name","Wallet","Exact amount"]},
   };
   const disc=DISCLOSURE[kycMode]||DISCLOSURE["Regulator"];
-
   return <div>
     <div style={{marginBottom:24}}>
       <h3 style={{fontSize:24,fontWeight:800,color:"#fff",margin:"0 0 6px"}}>ZK Privacy Layer — <span style={{color:"#A3FF12"}}>Investor Identity Shield</span></h3>
       <p style={{fontSize:13,color:"#888",margin:0,maxWidth:620,lineHeight:1.5}}>Institutional investors prove KYC compliance and accreditation without revealing identity, wallet, or exact amounts. Regulators receive selective disclosure — only what's required by law.</p>
     </div>
-
     <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16,marginBottom:16}}>
       {/* ZK KYC Card */}
       <Card style={{background:"#0a0f0a",border:"1px solid #1a3a1a"}}>
         <div style={{fontSize:12,fontWeight:700,color:"#A3FF12",letterSpacing:1,marginBottom:16,fontFamily:"monospace"}}>🔐 ZK-KYC VERIFICATION</div>
-
         <div style={{padding:"14px 16px",borderRadius:8,background:"#0A0A0A",border:"1px solid #1F2937",marginBottom:16}}>
           <div style={{fontSize:11,color:"#555",fontFamily:"monospace",marginBottom:10}}>INVESTOR PROOF PACKET</div>
           {[["Investor","██████████ (hidden)","#888"],["KYC Status","✅ VERIFIED (zk-proof)","#A3FF12"],["Jurisdiction","✅ PERMITTED","#A3FF12"],["Accredited","✅ YES","#A3FF12"],["Proof hash",proofHash,"#5BA3E6"]].map(([k,v,c],i)=>
@@ -1789,25 +1676,20 @@ function ZKPrivacyView() {
             </div>
           )}
         </div>
-
         <button onClick={runVerify} disabled={verifying} style={{width:"100%",padding:"10px",borderRadius:7,border:"none",background:verified?"#0d2818":"#A3FF12",color:verified?"#A3FF12":"#000",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"monospace",marginBottom:10}}>
           {verifying?"VERIFYING PROOF...":verified?"✅ PROOF VERIFIED — VALID":"VERIFY ZK PROOF"}
         </button>
-
         {verified&&<div style={{padding:"10px 14px",borderRadius:8,background:"#051a05",border:"1px solid #A3FF1230",fontSize:11,color:"#A3FF12",fontFamily:"monospace"}}>
           ✓ Proof valid · KYC: compliant · Jurisdiction: permitted<br/>
           <span style={{color:"#555"}}>Public sees: 0 personal data</span>
         </div>}
       </Card>
-
       {/* Selective Disclosure Card */}
       <Card style={{background:"#0a0f0a",border:"1px solid #1a3a1a"}}>
         <div style={{fontSize:12,fontWeight:700,color:"#A3FF12",letterSpacing:1,marginBottom:16,fontFamily:"monospace"}}>📋 SELECTIVE DISCLOSURE</div>
-
         <div style={{display:"flex",gap:6,marginBottom:16}}>
           {["Public","Auditor","Regulator"].map(m=><button key={m} onClick={()=>setKycMode(m)} style={{flex:1,padding:"7px",borderRadius:6,border:`1px solid ${kycMode===m?"#A3FF12":"#333"}`,background:kycMode===m?"#A3FF1215":"#0A0A0A",color:kycMode===m?"#A3FF12":"#666",fontSize:11,cursor:"pointer",fontFamily:"monospace",fontWeight:600}}>{m}</button>)}
         </div>
-
         <div style={{marginBottom:14}}>
           <div style={{fontSize:10,color:"#A3FF12",fontFamily:"monospace",marginBottom:8}}>✅ VISIBLE TO {kycMode.toUpperCase()}</div>
           {disc.fields.map((f,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",padding:"5px 0",borderBottom:"1px solid #111",fontSize:12}}>
@@ -1822,7 +1704,6 @@ function ZKPrivacyView() {
         </div>
       </Card>
     </div>
-
     {/* ZK Privacy Tiers — Monetization */}
     <Card style={{background:"#0a0a14",border:"1px solid #1a1a3a"}}>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:18}}>
@@ -1865,7 +1746,6 @@ function ZKPrivacyView() {
         </div>)}
       </div>
     </Card>
-
     {/* Token Sink Explainer */}
     <Card style={{background:"#0a0f0a",border:"1px solid #1a3a1a",marginTop:16}}>
       <div style={{fontSize:12,fontWeight:700,color:"#A3FF12",letterSpacing:1,marginBottom:14,fontFamily:"monospace"}}>💎 WHY HOLD $GEBRID</div>
@@ -1886,7 +1766,6 @@ function ZKPrivacyView() {
     </Card>
   </div>;
 }
-
 // ═══ DePC — DECENTRALIZED PRODUCER CENTER ═══
 function DePCView() {
   const [tab,setTab]=useState("forge");
@@ -1896,7 +1775,6 @@ function DePCView() {
   const [voteArtist,setVoteArtist]=useState(null);
   const [aiApiKeys,setAiApiKeys]=useState({replicate:"",runway:""});
   const [myVideos,setMyVideos]=useState([]);
-
   const ARTISTS=[
     {id:1,name:"Nova Kira",genre:"Electronic / Ambient",plays:48200,votes:3841,rating:94,nftPrice:"2.4 ETH",royalty:"8%",status:"trending",badge:"🔥",track:"Neon Drift",fans:1240,deal:null,img:"🎧"},
     {id:2,name:"Sol Vargas",genre:"Latin Trap / R&B",plays:31700,votes:2190,rating:89,nftPrice:"1.8 ETH",royalty:"6%",status:"rising",badge:"⬆️",track:"Fuego Lento",fans:890,deal:null,img:"🎤"},
@@ -1904,7 +1782,6 @@ function DePCView() {
     {id:4,name:"Mira Sova",genre:"Indie Pop / Folk",plays:19300,votes:1480,rating:82,nftPrice:"0.9 ETH",royalty:"5%",status:"new",badge:"✨",track:"Paper Stars",fans:420,deal:null,img:"🎸"},
     {id:5,name:"DΛRK Protocol",genre:"Industrial / Techno",plays:55100,votes:4200,rating:92,nftPrice:"3.2 ETH",royalty:"9%",status:"trending",badge:"🔥",track:"System Override",fans:2100,deal:null,img:"🎛️"},
   ];
-
   const MERCH_ITEMS=[
     {artist:"0xBeats",item:"Signed Vinyl NFT",price:"0.5 ETH",type:"collectible",stock:50,sold:38,icon:"🎵"},
     {artist:"Nova Kira",item:"Limited Hoodie Drop",price:"120 USDC",type:"physical",stock:100,sold:71,icon:"👕"},
@@ -1913,13 +1790,11 @@ function DePCView() {
     {artist:"DΛRK Protocol",item:"Backstage Pass NFT",price:"500 $GEBRID",type:"experience",stock:10,sold:7,icon:"🔑"},
     {artist:"Mira Sova",item:"Handwritten Lyrics",price:"0.3 ETH",type:"collectible",stock:30,sold:12,icon:"📜"},
   ];
-
   const LABEL_OFFERS=[
     {label:"Universal Web3",artist:"0xBeats",offer:"$2.4M advance + 18% royalty split",status:"accepted",date:"2d ago",icon:"🏢"},
     {label:"Sony Music3",artist:"Nova Kira",offer:"$800K advance + 15% royalty split",status:"pending",date:"5h ago",icon:"🎼"},
     {label:"Decentralized Records",artist:"DΛRK Protocol",offer:"$1.1M advance + 20% royalty split",status:"reviewing",date:"1d ago",icon:"📀"},
   ];
-
   const handleAI=()=>{
     if(!aiPrompt.trim()) return;
     setAiGenerating(true);setAiResult(null);
@@ -1936,9 +1811,7 @@ function DePCView() {
       setAiGenerating(false);
     }, 2800);
   };
-
   const TABS=[["forge","⚒️ FORGE"],["arena","🏟️ ARENA"],["label","🏷️ LABEL"],["merch","🛍️ MERCH"],["ai","🤖 AI Studio"]];
-
   return <div>
     <div style={{marginBottom:20}}>
       <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:6}}>
@@ -1951,7 +1824,6 @@ function DePCView() {
       </h2>
       <p style={{fontSize:13,color:"#888",margin:0}}>Mint → DAO Discovery → Label Deal → Merch & Concerts — fully on-chain</p>
     </div>
-
     {/* Metrics */}
     <div style={{display:"flex",gap:12,flexWrap:"wrap",marginBottom:20}}>
       {[["Artists","1,247","+38 this week","#E040FB"],["Music NFTs","8,420","minted on-chain","#A3FF12"],["DAO Votes","2.1M","$GEBRID staked","#FF9800"],["Label Deals","14","$18.4M total value","#5BA3E6"]].map(([l,v,s,c],i)=>
@@ -1962,7 +1834,6 @@ function DePCView() {
         </div>
       )}
     </div>
-
     {/* Tab Nav */}
     <div style={{display:"flex",gap:4,marginBottom:20,background:"#111827",borderRadius:10,padding:4,flexWrap:"wrap"}}>
       {TABS.map(([id,label])=>
@@ -1971,7 +1842,6 @@ function DePCView() {
         </button>
       )}
     </div>
-
     {/* FORGE */}
     {tab==="forge"&&<div>
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16}}>
@@ -2030,7 +1900,6 @@ function DePCView() {
         </Card>
       </div>
     </div>}
-
     {/* ARENA */}
     {tab==="arena"&&<div>
       <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:16}}>
@@ -2090,7 +1959,6 @@ function DePCView() {
         </div>
       </Card>
     </div>}
-
     {/* LABEL */}
     {tab==="label"&&<div>
       <div style={{marginBottom:16}}>
@@ -2135,7 +2003,6 @@ function DePCView() {
         </div>
       </Card>
     </div>}
-
     {/* MERCH */}
     {tab==="merch"&&<div>
       <div style={{marginBottom:16}}>
@@ -2176,13 +2043,10 @@ function DePCView() {
         </div>
       </Card>
     </div>}
-
     {/* AI Studio */}
     {tab==="ai"&&<AIStudioTab apiKeys={aiApiKeys} onSaveKeys={setAiApiKeys} myVideos={myVideos} onAddVideo={v=>setMyVideos(p=>[...p,v])} onRemoveVideo={i=>setMyVideos(p=>p.filter((_,j)=>j!==i))}/>}
   </div>;
 }
-
-
 // ═══ AI STUDIO (Replicate + Runway + My Videos) ═══
 function replicatePoll(id, apiKey, attempts) {
   if(attempts<=0) return Promise.reject(new Error("Timeout"));
@@ -2194,7 +2058,6 @@ function replicatePoll(id, apiKey, attempts) {
     return replicatePoll(id, apiKey, attempts-1);
   });
 }
-
 function replicateMusicGen(prompt, genre, apiKey) {
   const fullPrompt = genre ? genre+" music, "+prompt : prompt;
   return fetch("https://api.replicate.com/v1/models/meta/musicgen/predictions", {
@@ -2209,7 +2072,6 @@ function replicateMusicGen(prompt, genre, apiKey) {
     return data.output;
   });
 }
-
 function runwayPoll(taskId, apiKey, attempts) {
   if(attempts<=0) return Promise.reject(new Error("Timeout"));
   return new Promise(function(r){setTimeout(r,5000);}).then(function(){
@@ -2220,7 +2082,6 @@ function runwayPoll(taskId, apiKey, attempts) {
     return runwayPoll(taskId, apiKey, attempts-1);
   });
 }
-
 function runwayVideoGen(prompt, apiKey) {
   return fetch("https://api.dev.runwayml.com/v1/text_to_video", {
     method:"POST",
@@ -2233,7 +2094,6 @@ function runwayVideoGen(prompt, apiKey) {
     return runwayPoll(data.id, apiKey, 40);
   });
 }
-
 function AIStudioTab({apiKeys, onSaveKeys, myVideos, onAddVideo, onRemoveVideo}) {
   const [prompt,setPrompt]=useState("");
   const [genre,setGenre]=useState("");
@@ -2246,10 +2106,8 @@ function AIStudioTab({apiKeys, onSaveKeys, myVideos, onAddVideo, onRemoveVideo})
   const [keys,setKeys]=useState(apiKeys);
   const [activeStudioTab,setActiveStudioTab]=useState("generate");
   const videoInputRef=useRef(null);
-
   const hasReplicate=!!keys.replicate;
   const hasRunway=!!keys.runway;
-
   const handleGenerate = () => {
     if(!prompt.trim()) return;
     if(!hasReplicate) { setShowKeys(true); return; }
@@ -2278,7 +2136,6 @@ function AIStudioTab({apiKeys, onSaveKeys, myVideos, onAddVideo, onRemoveVideo})
       setGenerating(false);
     });
   };
-
   const handleVideoUpload = (e) => {
     const files = Array.from(e.target.files);
     files.forEach(file=>{
@@ -2286,7 +2143,6 @@ function AIStudioTab({apiKeys, onSaveKeys, myVideos, onAddVideo, onRemoveVideo})
       onAddVideo({name:file.name.replace(/\.[^.]+$/,""),url,size:file.size,date:new Date().toLocaleDateString(),views:Math.floor(Math.random()*50000+1000),likes:Math.floor(Math.random()*3000+100),type:"uploaded"});
     });
   };
-
   return <div>
     <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:20,flexWrap:"wrap",gap:12}}>
       <div>
@@ -2298,7 +2154,6 @@ function AIStudioTab({apiKeys, onSaveKeys, myVideos, onAddVideo, onRemoveVideo})
         {hasReplicate?"⚙️ API Keys ✓":"⚙️ Set API Keys"}
       </button>
     </div>
-
     {/* API Keys panel */}
     {showKeys&&<Card style={{marginBottom:16,background:"#0a0a18",border:"1px solid #5BA3E640"}}>
       <div style={{fontSize:13,fontWeight:600,color:"#5BA3E6",marginBottom:12}}>🔑 API Keys (stored in session only)</div>
@@ -2321,14 +2176,12 @@ function AIStudioTab({apiKeys, onSaveKeys, myVideos, onAddVideo, onRemoveVideo})
         <button onClick={()=>setShowKeys(false)} style={{padding:"8px 14px",borderRadius:7,border:"1px solid #333",background:"transparent",color:"#888",fontSize:12,cursor:"pointer",fontFamily:"inherit"}}>Cancel</button>
       </div>
     </Card>}
-
     {/* Studio sub-tabs */}
     <div style={{display:"flex",gap:4,marginBottom:16,background:"#111827",borderRadius:8,padding:3}}>
       {[["generate","🎵 Generate"],["myvideos","📹 My Videos"]].map(([id,label])=>
         <button key={id} onClick={()=>setActiveStudioTab(id)} style={{flex:1,padding:"8px",borderRadius:6,border:"none",cursor:"pointer",fontSize:12,fontWeight:600,fontFamily:"inherit",background:activeStudioTab===id?"#E040FB":"transparent",color:activeStudioTab===id?"#fff":"#888"}}>{label} {id==="myvideos"&&myVideos.length>0?`(${myVideos.length})`:""}</button>
       )}
     </div>
-
     {/* GENERATE TAB */}
     {activeStudioTab==="generate"&&<div>
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16}}>
@@ -2357,7 +2210,6 @@ function AIStudioTab({apiKeys, onSaveKeys, myVideos, onAddVideo, onRemoveVideo})
           {genStep&&<div style={{marginTop:10,fontSize:12,color:"#A3FF12",fontFamily:"monospace"}}>{genStep}</div>}
           {error&&<div style={{marginTop:10,padding:"8px 12px",borderRadius:6,background:"#2a0a0a",border:"1px solid #FF525240",fontSize:12,color:"#FF5252"}}>{error}</div>}
         </Card>
-
         <Card>
           <div style={{fontSize:13,fontWeight:600,color:"#A3FF12",marginBottom:14}}>🎬 Output</div>
           {!audioUrl&&!generating&&<div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",height:300,color:"#333",fontSize:13,gap:10}}>
@@ -2391,7 +2243,6 @@ function AIStudioTab({apiKeys, onSaveKeys, myVideos, onAddVideo, onRemoveVideo})
           </div>}
         </Card>
       </div>
-
       <Card style={{marginTop:14,background:"#0a0819",border:"1px solid #E040FB20"}}>
         <div style={{fontSize:12,fontWeight:600,color:"#E040FB",marginBottom:10}}>🔮 What AI Studio generates</div>
         <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(190px,1fr))",gap:8}}>
@@ -2403,7 +2254,6 @@ function AIStudioTab({apiKeys, onSaveKeys, myVideos, onAddVideo, onRemoveVideo})
         </div>
       </Card>
     </div>}
-
     {/* MY VIDEOS TAB */}
     {activeStudioTab==="myvideos"&&<div>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
@@ -2416,7 +2266,6 @@ function AIStudioTab({apiKeys, onSaveKeys, myVideos, onAddVideo, onRemoveVideo})
         </button>
         <input ref={videoInputRef} type="file" accept="video/*,audio/*" multiple style={{display:"none"}} onChange={handleVideoUpload}/>
       </div>
-
       {myVideos.length===0&&<div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",minHeight:300,gap:14,color:"#444"}}>
         <div style={{fontSize:52}}>📹</div>
         <div style={{fontSize:15,fontWeight:600,color:"#666"}}>No videos yet</div>
@@ -2425,7 +2274,6 @@ function AIStudioTab({apiKeys, onSaveKeys, myVideos, onAddVideo, onRemoveVideo})
           Upload first video
         </button>
       </div>}
-
       {myVideos.length>0&&<div>
         {/* Stats bar */}
         <div style={{display:"flex",gap:12,marginBottom:16,flexWrap:"wrap"}}>
@@ -2436,7 +2284,6 @@ function AIStudioTab({apiKeys, onSaveKeys, myVideos, onAddVideo, onRemoveVideo})
             </div>
           )}
         </div>
-
         {/* Video grid */}
         <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(280px,1fr))",gap:14}}>
           {myVideos.map((v,i)=><div key={i} style={{background:"#111827",borderRadius:12,border:"1px solid #1F2937",overflow:"hidden"}}>
@@ -2461,12 +2308,9 @@ function AIStudioTab({apiKeys, onSaveKeys, myVideos, onAddVideo, onRemoveVideo})
     </div>}
   </div>;
 }
-
-
 // ═══ TOKENOMICS ═══
 function TokenomicsView() {
   const [tab,setTab]=useState("overview");
-
   const ALLOC_DATA=[
     {name:"Community & Staking",pct:17,tokens:"170M",color:"#A3FF12",cliff:"6mo",vest:"54mo",tge:"0%"},
     {name:"Treasury",pct:15,tokens:"150M",color:"#00E5FF",cliff:"12mo",vest:"24mo",tge:"0%"},
@@ -2480,7 +2324,6 @@ function TokenomicsView() {
     {name:"Angel",pct:5,tokens:"50M",color:"#FFD700",cliff:"6mo",vest:"18mo",tge:"10%"},
     {name:"Airdrop",pct:3,tokens:"30M",color:"#FF5252",cliff:"—",vest:"6mo",tge:"~83%"},
   ];
-
   const ROUNDS=[
     {round:"Angel",val:"$7M",raise:"$350K",price:"$0.007",disc:"82.5%",alloc:"5%",tokens:"50M",cliff:"6mo",vest:"18mo",tge:"10%",status:"SOLD",statusColor:"#FF5252"},
     {round:"Pre-seed",val:"$10M",raise:"$700K",price:"$0.01",disc:"75%",alloc:"7%",tokens:"70M",cliff:"6mo",vest:"18mo",tge:"10%",status:"43%",statusColor:"#FF9800"},
@@ -2488,7 +2331,6 @@ function TokenomicsView() {
     {round:"Private",val:"$30M",raise:"$3.6M",price:"$0.03",disc:"25%",alloc:"12%",tokens:"120M",cliff:"3mo",vest:"12mo",tge:"10%",status:"—",statusColor:"#666"},
     {round:"Public",val:"$40M",raise:"$4M",price:"$0.04",disc:"—",alloc:"10%",tokens:"100M",cliff:"1mo",vest:"6mo",tge:"10%",status:"—",statusColor:"#666"},
   ];
-
   const ROI=[
     {round:"Angel",price:0.007,x25:35,x100:142,x350:500},
     {round:"Pre-seed",price:0.01,x25:25,x100:100,x350:350},
@@ -2496,7 +2338,6 @@ function TokenomicsView() {
     {round:"Private",price:0.03,x25:8.3,x100:33,x350:116},
     {round:"Public",price:0.04,x25:6.2,x100:25,x350:87.5},
   ];
-
   const PRICE_POINTS=[
     {mcap:"$40M",price:0.04,label:"TGE"},
     {mcap:"$100M",price:0.10,label:""},
@@ -2506,21 +2347,17 @@ function TokenomicsView() {
     {mcap:"$2.5B",price:2.50,label:""},
     {mcap:"$3.5B",price:3.50,label:"Target"},
   ];
-
   const pieData=ALLOC_DATA.map(a=>({name:a.name,value:a.pct,color:a.color}));
-
   return <div>
     <div style={{marginBottom:20}}>
       <h2 style={{fontSize:24,fontWeight:800,color:"#fff",margin:"0 0 6px"}}>$GEBRID <span style={{color:"#A3FF12"}}>Tokenomics</span></h2>
       <p style={{fontSize:13,color:"#888",margin:0}}>1,000,000,000 total supply · $0.04 listing price · $40M FDV · TGE circulating: 109M (10.9%)</p>
     </div>
-
     <div style={{display:"flex",gap:4,background:"#111827",borderRadius:8,padding:3,marginBottom:20,flexWrap:"wrap"}}>
       {[["overview","📊 Overview"],["rounds","💰 Sale Rounds"],["roi","🚀 ROI & Price"],["vesting","📅 Vesting"],["staking","💎 Staking Tiers"]].map(([id,label])=>
         <button key={id} onClick={()=>setTab(id)} style={{padding:"8px 14px",borderRadius:6,border:"none",cursor:"pointer",fontSize:12,fontWeight:600,fontFamily:"monospace",background:tab===id?"#A3FF12":"transparent",color:tab===id?"#000":"#888"}}>{label}</button>
       )}
     </div>
-
     {tab==="overview"&&<div>
       <div style={{display:"flex",gap:12,flexWrap:"wrap",marginBottom:20}}>
         <Metric label="Total Supply" value="1B" sub="$GEBRID tokens"/>
@@ -2530,7 +2367,6 @@ function TokenomicsView() {
         <Metric label="Init. Market Cap" value="$4.36M" sub="at TGE"/>
         <Metric label="Total Raise" value="$10.25M" sub="all rounds"/>
       </div>
-
       <div style={{display:"grid",gridTemplateColumns:"300px 1fr",gap:16,marginBottom:16}}>
         <Card>
           <div style={{fontSize:14,fontWeight:600,marginBottom:8,color:"#fff"}}>Token Allocation</div>
@@ -2545,7 +2381,6 @@ function TokenomicsView() {
             </div>)}
           </div>
         </Card>
-
         <Card>
           <div style={{fontSize:14,fontWeight:600,marginBottom:12,color:"#fff"}}>Allocation Breakdown</div>
           {ALLOC_DATA.map((a,i)=><div key={i} style={{marginBottom:6}}>
@@ -2565,7 +2400,6 @@ function TokenomicsView() {
           </div>)}
         </Card>
       </div>
-
       <Card style={{background:"#0a0f0a",border:"1px solid #1a3a1a"}}>
         <div style={{fontSize:12,fontWeight:700,color:"#A3FF12",letterSpacing:1,marginBottom:12,fontFamily:"monospace"}}>🏦 USE OF FUNDS ($10.25M RAISE)</div>
         <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:12}}>
@@ -2582,7 +2416,6 @@ function TokenomicsView() {
         </div>
       </Card>
     </div>}
-
     {tab==="rounds"&&<div>
       <Card style={{padding:0,overflow:"hidden"}}>
         <div style={{padding:"14px 20px",borderBottom:"1px solid #1F2937"}}>
@@ -2610,7 +2443,6 @@ function TokenomicsView() {
           </table>
         </div>
       </Card>
-
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16,marginTop:16}}>
         <Card style={{background:"#0a0f0a",border:"1px solid #1a3a1a"}}>
           <div style={{fontSize:12,fontWeight:700,color:"#A3FF12",letterSpacing:1,marginBottom:12,fontFamily:"monospace"}}>✅ INVESTMENT HIGHLIGHTS</div>
@@ -2630,7 +2462,6 @@ function TokenomicsView() {
         </Card>
       </div>
     </div>}
-
     {tab==="roi"&&<div>
       <Card style={{marginBottom:16}}>
         <div style={{fontSize:14,fontWeight:600,marginBottom:14,color:"#fff"}}>$GEBRID Price Forecast by Market Cap</div>
@@ -2646,7 +2477,6 @@ function TokenomicsView() {
           })}
         </div>
       </Card>
-
       <Card>
         <div style={{fontSize:14,fontWeight:600,marginBottom:12,color:"#fff"}}>ROI by Round</div>
         <div style={{overflowX:"auto"}}>
@@ -2668,7 +2498,6 @@ function TokenomicsView() {
         </div>
       </Card>
     </div>}
-
     {tab==="vesting"&&<div>
       <Card>
         <div style={{fontSize:14,fontWeight:600,marginBottom:14,color:"#fff"}}>Vesting Schedule — All Categories</div>
@@ -2690,7 +2519,6 @@ function TokenomicsView() {
           </table>
         </div>
       </Card>
-
       <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:12,marginTop:16}}>
         {[
           {title:"TGE Day",month:"Month 0",circ:"109M",pct:"10.9%",color:"#FF9800"},
@@ -2704,7 +2532,6 @@ function TokenomicsView() {
         </Card>)}
       </div>
     </div>}
-
     {tab==="staking"&&<div>
       <Card style={{padding:0,overflow:"hidden"}}>
         <div style={{padding:"14px 20px",borderBottom:"1px solid #1F2937"}}>
@@ -2731,12 +2558,10 @@ function TokenomicsView() {
           </table>
         </div>
       </Card>
-
       <Card style={{marginTop:16,background:"#0a0f0a",border:"1px solid #A3FF1230"}}>
         <div style={{fontSize:12,fontWeight:700,color:"#A3FF12",letterSpacing:1,marginBottom:10,fontFamily:"monospace"}}>💰 PLATFORM PROFIT POOL</div>
         <p style={{fontSize:12,color:"#888",margin:0,lineHeight:1.6}}>Active Platinum holders share revenue from AI services, marketplace commissions, and RWA/NFT licensing fees. Revenue distributed proportionally to staked amount.</p>
       </Card>
-
       <Card style={{marginTop:16,background:"#0a0a14",border:"1px solid #5BA3E630"}}>
         <div style={{fontSize:12,fontWeight:700,color:"#5BA3E6",letterSpacing:1,marginBottom:10,fontFamily:"monospace"}}>🔗 LIQUIDITY POOLS</div>
         <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:12}}>
@@ -2753,7 +2578,6 @@ function TokenomicsView() {
     </div>}
   </div>;
 }
-
 // ═══ BUILDER ═══
 function BuilderView({strategy,onBack}) {
   const [step,setStep]=useState(1);
@@ -2767,7 +2591,6 @@ function BuilderView({strategy,onBack}) {
   const [guardRules,setGuardRules]=useState({dustFilter:true,addressPoison:true,maxSlippage:true,sanctionsCheck:true,flashloanGuard:false,mevProtect:false});
   const [aiRec,setAiRec]=useState(null);
   const [aiLoading,setAiLoading]=useState(false);
-
   const runBacktest=()=>{
     setBacktesting(true);setBacktest(null);
     setTimeout(()=>{
@@ -2777,7 +2600,6 @@ function BuilderView({strategy,onBack}) {
       setBacktesting(false);
     },1200);
   };
-
   const runAiRec=()=>{
     setAiLoading(true);
     setTimeout(()=>{
@@ -2892,7 +2714,6 @@ function BuilderView({strategy,onBack}) {
             {!cfg.privacy||cfg.privacy==="off"?"Positions visible on-chain · Standard transparency":cfg.privacy==="zk"?"Position sizes hidden · Only aggregate data public · Wallet visible":"Full ZK: wallet, size & strategy encrypted · Only zk-proof public"}
           </div>
         </div>
-
         {/* Guard Rules */}
         <div style={{marginBottom:18}}>
           <label style={{fontSize:12,color:"#888",display:"block",marginBottom:8}}>🛡️ Guard Rules</label>
@@ -2908,7 +2729,6 @@ function BuilderView({strategy,onBack}) {
             )}
           </div>
         </div>
-
         {/* Backtest */}
         <div style={{marginBottom:14}}>
           <button onClick={runBacktest} disabled={backtesting} style={{width:"100%",padding:"10px",borderRadius:8,border:"1px dashed #5BA3E640",background:"#0a0a14",color:backtesting?"#555":"#5BA3E6",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"monospace"}}>
@@ -2929,7 +2749,6 @@ function BuilderView({strategy,onBack}) {
             </div>
           </div>}
         </div>
-
         {/* AI Recommendations */}
         <div style={{marginBottom:14}}>
           <button onClick={runAiRec} disabled={aiLoading} style={{width:"100%",padding:"10px",borderRadius:8,border:"1px dashed #FF980040",background:"#0f0a05",color:aiLoading?"#555":"#FF9800",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"monospace"}}>
@@ -2945,7 +2764,6 @@ function BuilderView({strategy,onBack}) {
             </div>)}
           </div>}
         </div>
-
         <div style={{display:"flex",gap:8}}><Btn onClick={()=>setStep(1)} style={{flex:1}}>Back</Btn><Btn primary onClick={()=>setStep(3)} style={{flex:2}}>Review</Btn></div>
       </div>}
       {step===3&&<div>
@@ -2986,7 +2804,6 @@ function BuilderView({strategy,onBack}) {
     </Card>
   </div>;
 }
-
 // ═══ MAIN APP ═══
 function App() {
   const [view,setView]=useState("dashboard");
@@ -2996,7 +2813,6 @@ function App() {
   const [time,setTime]=useState(new Date());
   useEffect(()=>{const t=setInterval(()=>setTime(new Date()),1000);return()=>clearInterval(t)},[]);
   const connect=useCallback(()=>{setAddr("0x"+Array.from({length:40},()=>"0123456789abcdef"[Math.floor(Math.random()*16)]).join(""));setConnected(true)},[]);
-
   const NAV=[
     {id:"dashboard",icon:"▧",label:"Dashboard"},
     {id:"ai",icon:"🤖",label:"AI Console",badge:"AI"},
@@ -3014,7 +2830,6 @@ function App() {
     {id:"builder",icon:"⚙️",label:"Agent Builder"},
     {id:"depc",icon:"🎵",label:"DePC",badge:"NEW"},
   ];
-
   if(!connected) return <div style={{background:"#0A0A0A",minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'Inter',system-ui,sans-serif",color:"#fff"}}>
     <div style={{textAlign:"center",maxWidth:440}}>
       <div style={{fontSize:44,fontWeight:900,color:"#A3FF12",marginBottom:4,letterSpacing:-2}}>GEBRID</div>
@@ -3030,7 +2845,6 @@ function App() {
       <p style={{fontSize:11,color:"#555",marginTop:16}}>Testnet Mode · Investor Demo</p>
     </div>
   </div>;
-
   return <div style={{display:"flex",minHeight:"100vh",background:"#0A0A0A",fontFamily:"'Inter',system-ui,sans-serif",color:"#E0E0E0"}}>
     {/* Sidebar */}
     <div style={{width:210,background:"#0d0d14",borderRight:"1px solid #1F2937",padding:"16px 0",display:"flex",flexDirection:"column",flexShrink:0,position:"sticky",top:0,height:"100vh",overflowY:"auto"}}>
@@ -3083,9 +2897,7 @@ function App() {
     </div>
   </div>;
 }
-
 ReactDOM.render(<App/>, document.getElementById("root"));
-
 </script>
 </body>
 </html>
