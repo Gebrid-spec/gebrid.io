@@ -15,8 +15,9 @@ export async function onRequestPost(context) {
       );
     }
 
+    // 2. ИСПРАВЛЕНО: Используем актуальную модель gemini-2.0-flash
     const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${context.env.GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${context.env.GEMINI_API_KEY}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -26,7 +27,7 @@ export async function onRequestPost(context) {
 
     const data = await res.json();
 
-    // 2. Проверяем, не вернул ли Google ошибку (например, неверный ключ)
+    // 3. Проверяем, не вернул ли Google ошибку 
     if (data.error) {
       return new Response(
         JSON.stringify({ 
@@ -37,7 +38,7 @@ export async function onRequestPost(context) {
       );
     }
 
-    // 3. Безопасно читаем ответ нейросети
+    // 4. Безопасно читаем ответ нейросети
     if (data.candidates && data.candidates.length > 0) {
       const reply = data.candidates[0].content.parts[0].text;
       return new Response(JSON.stringify({ reply }), { headers });
