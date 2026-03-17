@@ -9,3 +9,34 @@ input:focus{border-color:#A3FF12!important;outline:none}
 .ld-logo{font-size:40px;font-weight:900;color:#A3FF12;letter-spacing:-2px}
 .ld-spin{width:22px;height:22px;border:2px solid #1F2937;border-top-color:#A3FF12;border-radius:50%;animation:spin 0.7s linear infinite}
 .ld-txt{font-size:11px;color:#444;letter-spacing:2px;text-transform:uppercase}
+
+/* Responsive */
+@media(max-width:768px){
+  body{font-size:14px}
+}
+
+/* Skeleton loading animation */
+@keyframes shimmer{
+  0%{background-position:-200px 0}
+  100%{background-position:200px 0}
+}
+.skeleton{
+  background:linear-gradient(90deg,#1F2937 25%,#2a3444 50%,#1F2937 75%);
+  background-size:400px 100%;
+  animation:shimmer 1.5s infinite;
+  border-radius:8px;
+}
+
+/* Toast notification */
+@keyframes slideIn{
+  from{transform:translateX(100%);opacity:0}
+  to{transform:translateX(0);opacity:1}
+}
+@keyframes slideOut{
+  from{transform:translateX(0);opacity:1}
+  to{transform:translateX(100%);opacity:0}
+}
+
+/* Smooth transitions */
+.fade-in{animation:fadeIn 0.3s ease-out}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}

@@ -1,0 +1,14 @@
+{
+  "name": "gebrid-api",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch index.js",
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "fastify": "^5.3.3",
+    "@fastify/cors": "^11.0.1",
+    "dotenv": "^16.5.0"
+  }
+}
