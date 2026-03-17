@@ -7,7 +7,7 @@ export async function onRequestPost(context) {
   try {
     const { message } = await context.request.json();
 
-    // 1. Проверяем, подтянулся ли ключ из настроек Cloudflare
+    // Проверяем ключ
     if (!context.env.GEMINI_API_KEY) {
       return new Response(
         JSON.stringify({ error: "Ключ GEMINI_API_KEY не найден в переменных окружения" }), 
@@ -15,9 +15,9 @@ export async function onRequestPost(context) {
       );
     }
 
-    // 2. ИСПРАВЛЕНО: Используем актуальную модель gemini-2.0-flash
+    // Запрос к актуальной модели gemini-3.1-pro-preview
     const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-pro-preview:generateContent?key=${context.env.GEMINI_API_KEY}`
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-pro-preview:generateContent?key=${context.env.GEMINI_API_KEY}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -27,7 +27,7 @@ export async function onRequestPost(context) {
 
     const data = await res.json();
 
-    // 3. Проверяем, не вернул ли Google ошибку 
+    // Проверяем ошибки от Google
     if (data.error) {
       return new Response(
         JSON.stringify({ 
@@ -38,7 +38,7 @@ export async function onRequestPost(context) {
       );
     }
 
-    // 4. Безопасно читаем ответ нейросети
+    // Отдаем успешный ответ
     if (data.candidates && data.candidates.length > 0) {
       const reply = data.candidates[0].content.parts[0].text;
       return new Response(JSON.stringify({ reply }), { headers });
@@ -50,7 +50,6 @@ export async function onRequestPost(context) {
     }
 
   } catch(e) {
-    // Ловим любые другие сбои в коде
     return new Response(
       JSON.stringify({ error: "Внутренняя ошибка сервера: " + e.message }), 
       { status: 500, headers }
