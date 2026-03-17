@@ -503,7 +503,7 @@ COMPANY: Gebrid Foundation LLC, Hallandale Beach FL. gebrid.io. partnerships@geb
       const apiMessages = history.map(m => ({role: m.role, content: m.content}));
       apiMessages.push({role: "user", content: userMsg});
       
-      const response = await fetch("/api/chat", {
+      const response = await fetch("/api/chat?v=2", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({ message: userMsg })
