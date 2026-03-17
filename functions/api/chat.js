@@ -17,7 +17,7 @@ export async function onRequestPost(context) {
 
     // 2. ИСПРАВЛЕНО: Используем актуальную модель gemini-2.0-flash
     const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash:generateContent?key=${context.env.GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-pro-preview:generateContent?key=${context.env.GEMINI_API_KEY}`
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
